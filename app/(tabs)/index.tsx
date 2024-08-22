@@ -1,70 +1,181 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import React, { useRef } from 'react';
+import { Animated, InteractionManager } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView, TextInput, Image } from 'react-native';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { interpolateColor } from 'react-native-reanimated';
+import FavoriteButton from '../../components/FavoriteButton';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-
-export default function HomeScreen() {
+export default function App() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.nonView}>
+
+      </View>
+      <View style={styles.header}>
+        <TouchableOpacity style={styles.favoriteButton}>
+          <FontAwesome name="chevron-left" size={20} color="white" />
+        </TouchableOpacity>
+        <Text style={styles.headerText}>PLAYING NOW</Text>
+        {/* <TouchableOpacity style={styles.favoriteButton}>
+          <AntDesign name="hearto" size={24} color="red" />
+        </TouchableOpacity> */}
+        <FavoriteButton/>
+      </View>
+
+      <View style={styles.container}>
+        {/* 円みたいなアニメーション予定地 */}
+        <View>
+          <Image style={styles.bigCircleImage}source={require('../../assets/images/circle1.png')}/>
+          <Image style={styles.mediumCircleImage}source={require('../../assets/images/circle2.png')}/>
+          <View style={styles.containerOnCircle}>
+            <Text style={styles.textOnCircle}>1:19</Text>  
+            <Text style={styles.textOnCircleStrings}>リアルタイム生成中</Text> 
+            <Text style={styles.textOnCircle}>2:46</Text>
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.container}>
+        <View style={styles.titleWrapper}>
+          <Text style={styles.musicTitle}>曲名</Text>
+          <Text style={styles.rating}>☆☆☆☆☆</Text>
+        </View>
+      </View>
+
+      <View style={styles.container}>
+        <View style={styles.buttonWrapper}>
+          <TouchableOpacity style={styles.musicButton}>
+            <AntDesign name="banckward" size={40} color="white" style={styles.forwardIcon}/>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.musicButton}>
+            <Image style={{width: 76, height: 76}}source={require('../../assets/images/playButton1.png')}/>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.musicButton}>
+            <AntDesign name="forward" size={40} color="white" style={styles.forwardIcon}/>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#222',
+  },
+  nonView: {
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+  },
+  header: {
+    paddingHorizontal: 20,
+    paddingVertical: 20,
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  headerText: {
+    color: 'white',
+    fontWeight: '300',
+    fontSize: 14,
+    flex: 1,
+    textAlign: 'center',
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
+  favoriteButton: {
+    
+  },
+  container: {
+    // flex: 1,
+    paddingTop: 20,
+  },
+  bigCircleImage: {
+    width: 320,
+    height: 320,
     position: 'absolute',
+    top: '18%',
+    left: '11%',
   },
+  mediumCircleImage: {
+    width: 260,
+    height: 260,
+    position: 'absolute',
+    top: '30%',
+    left: '18%',
+  },
+  containerOnCircle: {
+    flexDirection: 'row',
+    paddingVertical: 30,
+    paddingTop: 200,
+    justifyContent: 'center',
+  },
+  textOnCircle: {
+    color: 'white',
+    fontWeight: '300',
+    fontSize: 14,
+    marginHorizontal: 5,
+    textAlign: 'center',
+  },
+  textOnCircleStrings: {
+    color: 'white',
+    fontWeight: '300',
+    fontSize: 12,
+    marginHorizontal: 10,
+    textAlign: 'center',
+  },
+  titleWrapper: {
+    alignItems: 'center',
+    marginTop: 160,
+    paddingVertical: 10,
+  },
+  musicTitle: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 20,
+    paddingVertical: 10,
+  },
+  rating: {
+    color: 'white',
+    fontWeight: '300',
+    fontSize: 16,
+  },
+  buttonWrapper: {
+    flexDirection: 'row',
+    marginBottom: 20,
+    justifyContent: 'center',
+  },
+  musicButton: {
+    paddingHorizontal: 20,
+    justifyContent: 'center',
+  },
+  forwardIcon: {
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+  },
+  button: {
+    backgroundColor: 'rgb(29, 161, 242)',
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    borderRadius: 20,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: '900',
+    fontSize: 16,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 10,
+  },
+  input: {
+    flex: 1,
+    borderColor: 'rgb(29, 161, 242)',
+    borderWidth: 2,
+    marginRight: 10,
+    borderRadius: 10,
+    color: 'white',
+    paddingHorizontal: 10,
+    fontSize: 16,
+  }
 });
