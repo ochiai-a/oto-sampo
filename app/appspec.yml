@@ -3,7 +3,7 @@ Resources:
   - HelloWorld:
       Type: AWS::Lambda::Function
       Properties:
-        Name: "HelloWorld"
+        Name: "ExternalApiCallerLambda"
         Alias: "dev"
         CurrentVersion: "{{CurrentVersion}}"
         TargetVersion: "{{TargetVersion}}"
