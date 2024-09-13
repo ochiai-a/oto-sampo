@@ -14,6 +14,18 @@
     "categories": {
       "auth": {
         "otosampo40678b34": {}
+      },
+      "function": {
+        "otosanpoAPIAuth": {
+          "deploymentBucketName": "amplify-otosampo-dev-e4da3-deployment",
+          "s3Key": "amplify-builds/otosanpoAPIAuth-6e695a7a4b7838633232-build.zip"
+        }
+      },
+      "hosting": {
+        "S3AndCloudFront": {}
+      },
+      "api": {
+        "otosanpoAPI": {}
       }
     }
   }
