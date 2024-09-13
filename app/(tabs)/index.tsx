@@ -12,6 +12,7 @@ import { Audio } from 'expo-av';
 export default function App() {
   // 初期化
   const [sound, setSound] = useState<Audio.Sound | null>(null);
+  
   useEffect(() => {
     // アンロード
     return sound
@@ -21,16 +22,27 @@ export default function App() {
     : undefined;
   }, [sound]);
 
-  // オーディオの再生
   async function playSound() {
-    const { sound } = await Audio.Sound.createAsync(
-    require('../../assets/music/mondo_01.mp3')
-  );
-    setSound(sound);
+    // 既に音が再生中の場合は、現在の音を停止してから新しい音を再生
+    if (sound) {
+      await sound.stopAsync(); // 現在の音を停止
+    }
+    const { sound: newSound } = await Audio.Sound.createAsync(
+      require('../../assets/music/mondo_01.mp3')
+    );
+    setSound(newSound);
 
-    await sound.playAsync(); 
+    await newSound.playAsync();
   }
 
+  // 音楽の停止処理
+  async function stopSound() {
+    if (sound) {
+      await sound.stopAsync(); // 音楽の再生を停止
+      await sound.unloadAsync(); // 音楽をアンロード
+      setSound(null); // sound ステートをクリア
+    }
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -73,9 +85,12 @@ export default function App() {
           {/* <TouchableOpacity style={styles.musicButton}>
             <AntDesign name="banckward" size={40} color="white" style={styles.forwardIcon}/>
           </TouchableOpacity> */}
-          <TouchableOpacity style={styles.musicButton} onPress={playSound}>
-            <Image style={{width: 76, height: 76}} source={require('../../assets/images/playButton1.png')}/>
-          </TouchableOpacity>
+            <TouchableOpacity style={styles.musicButton} onPress={playSound}>
+              <Image style={{width: 76, height: 76}} source={require('../../assets/images/playButton1.png')}/>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.musicButton} onPress={stopSound}>
+              <Image style={{width: 76, height: 76}} source={require('../../assets/images/playButton1.png')}/>
+            </TouchableOpacity>
           {/* <TouchableOpacity style={styles.musicButton}>
             <AntDesign name="forward" size={40} color="white" style={styles.forwardIcon}/>
           </TouchableOpacity> */}
