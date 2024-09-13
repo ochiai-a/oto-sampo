@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "paths": {
+    "/{bucket}/{filename}": {
+      "name": "/{bucket}/{filename}",
+      "lambdaFunction": "otosanpoAPIAuth",
+      "permissions": {
+        "setting": "open"
+      }
+    }
+  }
+}
