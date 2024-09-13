@@ -3,17 +3,15 @@ version: 0.2
 phases:
   build:
     commands:
-      - CurrentVersion=$(echo $(aws lambda get-alias --function-name ExternalApiCallerLambda --name dev | grep FunctionVersion | tail -1 |tr -cd "[0-9]"))
-  post_build:
-    commands:
-      - ls
+      - CurrentVersion=$(aws lambda get-alias --function-name ExternalApiCallerLambda --name dev --query 'FunctionVersion' --output text)
+      - echo CurrentVersion=$CurrentVersion
       - aws lambda publish-version --function-name ExternalApiCallerLambda
-      - TargetVersion=$(echo $(aws lambda list-versions-by-function --function-name ExternalApiCallerLambda | grep Version | tail -1 | tr -cd "[0-9]"))
-      - echo $CurrentVersion
-      - echo $TargetVersion
+      - TargetVersion=$(aws lambda list-versions-by-function --function-name ExternalApiCallerLambda --query 'Versions[-1].Version' --output text)
+      - echo TargetVersion=$TargetVersion
       - sed -i -e "s/{{CurrentVersion}}/$CurrentVersion/g" appspec.yml
       - sed -i -e "s/{{TargetVersion}}/$TargetVersion/g" appspec.yml
-      
+    
 artifacts:
   files:
+    - "appspec.yml"
     - "**/*"
