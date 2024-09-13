@@ -5,5 +5,5 @@ Resources:
       Properties:
         Name: "ExternalApiCallerLambda"
         Alias: "dev"
-        CurrentVersion: "$CurrentVersion"
-        TargetVersion: "$TargetVersion"
+        CurrentVersion: "{{CurrentVersion}}"
+        TargetVersion: "{{TargetVersion}}"
