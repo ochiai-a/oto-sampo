@@ -12,7 +12,8 @@ import { Audio } from 'expo-av';
 export default function App() {
   // 初期化
   const [sound, setSound] = useState<Audio.Sound | null>(null);
-  
+  const [isPlaying, setIsPlaying] = useState<boolean>(false); // 再生中の状態を管理
+
   useEffect(() => {
     // アンロード
     return sound
@@ -31,6 +32,7 @@ export default function App() {
       require('../../assets/music/mondo_01.mp3')
     );
     setSound(newSound);
+    setIsPlaying(true);
 
     await newSound.playAsync();
   }
@@ -40,6 +42,7 @@ export default function App() {
     if (sound) {
       await sound.stopAsync(); // 音楽の再生を停止
       await sound.unloadAsync(); // 音楽をアンロード
+      setIsPlaying(false);
       setSound(null); // sound ステートをクリア
     }
   }
@@ -85,13 +88,17 @@ export default function App() {
           {/* <TouchableOpacity style={styles.musicButton}>
             <AntDesign name="banckward" size={40} color="white" style={styles.forwardIcon}/>
           </TouchableOpacity> */}
-            <TouchableOpacity style={styles.musicButton} onPress={playSound}>
-              <Image style={{width: 76, height: 76}} source={require('../../assets/images/playButton1.png')}/>
-            </TouchableOpacity>
+          {isPlaying ? (
             <TouchableOpacity style={styles.musicButton} onPress={stopSound}>
               <Image style={{width: 76, height: 76}} source={require('../../assets/images/playButton1.png')}/>
             </TouchableOpacity>
-          {/* <TouchableOpacity style={styles.musicButton}>
+          ) : (
+            <TouchableOpacity style={styles.musicButton} onPress={playSound}>
+              <Image style={{width: 76, height: 76}} source={require('../../assets/images/playButton1.png')}/>
+            </TouchableOpacity>
+          )}
+
+        {/* <TouchableOpacity style={styles.musicButton}>
             <AntDesign name="forward" size={40} color="white" style={styles.forwardIcon}/>
           </TouchableOpacity> */}
         </View>
