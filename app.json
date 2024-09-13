@@ -16,10 +16,12 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.otosampo.otosampo",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       }
+      
     },
     "web": {
       "bundler": "metro",
