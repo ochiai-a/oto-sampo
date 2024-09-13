@@ -3,7 +3,7 @@ const stepfunctions = new AWS.StepFunctions();
 
 exports.handler = async (event) => {
     const params = {
-        stateMachineArn: 'arn:aws:states:your-region:your-account-id:stateMachine:your-state-machine-name', // StepFunctionsのステートマシンのARNを入れる
+        stateMachineArn: 'arn:aws:states:ap-northeast-1:654654257411:stateMachine:MyStateMachine-laxcrb4p2', // StepFunctionsのステートマシンのARNを入れる
         input: JSON.stringify(event)
     };
 
