@@ -1,30 +1,17 @@
-function Bigbuttonitem({ title }) {
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+
+interface ListItemProps {
+  title: string;
+}
+
+function Bigbuttonitem({ title }: ListItemProps) {
   return (
-    <div
-      style={{
-        width: 152,
-        height: 40,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        background: '#F0F0F0',
-        borderRadius: 10,
-        marginTop: 12,
-        marginBottom: 12,
-      }}
-    >
-      <span
-        style={{
-          color: '#FF0000',
-          fontSize: 14,
-          fontFamily: 'Roboto',
-          fontWeight: '700',
-          wordWrap: 'break-word',
-        }}
-      >
+    <View style={styles.buttonContainer}>
+      <Text style={styles.buttonText}>
         {title}
-      </span>
-    </div>
+      </Text>
+    </View>
   );
 }
 
@@ -33,20 +20,36 @@ function Bigbutton() {
   const items = [{ title: '再生' }, { title: 'シャフル' }]; // Example array of items
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'space-between', // Align buttons on left and right
-        width: '100%',
-      }}
-    >
+    <View style={styles.container}>
       {items.map((item, index) => (
-        <div key={index}>
-          <Bigbuttonitem title={item.title} />
-        </div>
+        <Bigbuttonitem key={index} title={item.title} />
       ))}
-    </div>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    justifyContent: 'space-between', // Align buttons on left and right
+    width: '100%',
+  },
+  buttonContainer: {
+    width: 152,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F0F0F0',
+    borderRadius: 10,
+    marginVertical: 12,
+  },
+  buttonText: {
+    color: '#FF0000',
+    fontSize: 14,
+    fontFamily: 'Roboto',
+    fontWeight: '700',
+    textAlign: 'center',
+  },
+});
 
 export default Bigbutton;

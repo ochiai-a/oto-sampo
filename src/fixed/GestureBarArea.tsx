@@ -1,3 +1,5 @@
+import React from 'react';
+
 import '../../css/FixedArea.css';
 
 function GestureBarArea() {
