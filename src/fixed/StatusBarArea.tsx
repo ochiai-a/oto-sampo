@@ -1,12 +1,17 @@
 import React from 'react';
-import '../../css/FixedArea.css';
+import { View, StyleSheet } from 'react-native';
 
 function StatusBarArea() {
   return (
-    <>
-      <div className="StatusBarArea"></div>
-    </>
+    <View style={styles.statusBarArea}></View>
   );
 }
+
+const styles = StyleSheet.create({
+  statusBarArea: {
+    // ここにスタイルを定義します
+    // 例: width: '100%', height: 20, backgroundColor: 'blue'
+  },
+});
 
 export default StatusBarArea;

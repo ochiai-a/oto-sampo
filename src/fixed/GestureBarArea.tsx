@@ -1,13 +1,17 @@
 import React from 'react';
-
-import '../../css/FixedArea.css';
+import { View, StyleSheet } from 'react-native';
 
 function GestureBarArea() {
   return (
-    <>
-      <div className="GestureBarArea"></div>
-    </>
+    <View style={styles.gestureBarArea}></View>
   );
 }
+
+const styles = StyleSheet.create({
+  gestureBarArea: {
+    // ここにスタイルを定義します
+    // 例: width: '100%', height: 50, backgroundColor: 'gray'
+  },
+});
 
 export default GestureBarArea;
