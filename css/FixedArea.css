@@ -1,0 +1,12 @@
+.StatusBarArea {
+  height: 45px;
+  background-color: white;
+  position: relative;
+}
+
+.GestureBarArea {
+  height: 21px;
+  /* background-color: #f3edf7; */
+  background-color: black;
+  position: relative;
+}

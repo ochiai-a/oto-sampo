@@ -3,14 +3,11 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 
-export default function recording() {
+export default function RecordingScreen() {
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [recordingUri, setRecordingUri] = useState<string | null>(null);
-
-
-
-
+  const [playbackObject, setPlaybackObject] = useState<Audio.Sound | null>(null);
   // 古い録音ファイルを削除する関数
   const deleteOldRecording = async () => {
     if (recordingUri) {
@@ -22,10 +19,6 @@ export default function recording() {
       }
     }
   };
-
-
-
-
 
   // 録音開始処理
   const startRecording = async () => {
@@ -48,9 +41,6 @@ export default function recording() {
       console.error('録音中にエラーが発生しました:', error);
     }
   };
-
-
-
 
   // 録音停止処理
   const stopRecording = async () => {
@@ -76,13 +66,41 @@ export default function recording() {
     }
   };
 
+  // 録音ファイルを再生する関数
+  const playRecording = async () => {
+    try {
+      if (recordingUri) {
+        const { sound } = await Audio.Sound.createAsync({ uri: recordingUri });
+        setPlaybackObject(sound);
+        await sound.playAsync();
+      }
+    } catch (error) {
+      console.error('再生中にエラーが発生しました:', error);
+    }
+  };
+
+  // 再生中の録音を停止する関数
+  const stopPlayback = async () => {
+    try {
+      if (playbackObject) {
+        await playbackObject.stopAsync();
+        setPlaybackObject(null);
+      }
+    } catch (error) {
+      console.error('再生停止中にエラーが発生しました:', error);
+    }
+  };
+
   useEffect(() => {
     return () => {
       if (recording) {
         recording.stopAndUnloadAsync(); // コンポーネントのアンマウント時に録音を停止
       }
+      if (playbackObject) {
+        playbackObject.stopAsync(); // コンポーネントのアンマウント時に再生を停止
+      }
     };
-  }, [recording]);
+  }, [recording, playbackObject]);
 
   return (
     <View style={styles.container}>
@@ -100,6 +118,12 @@ export default function recording() {
         <View style={styles.recordingInfo}>
           <Text>録音完了!</Text>
           <Text>録音ファイル: {recordingUri}</Text>
+          <TouchableOpacity style={styles.button} onPress={playRecording}>
+            <Text style={styles.buttonText}>再生</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={stopPlayback}>
+            <Text style={styles.buttonText}>停止</Text>
+          </TouchableOpacity>
         </View>
       )}
     </View>
@@ -121,6 +145,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#007bff',
     padding: 15,
     borderRadius: 5,
+    margin: 5,
   },
   buttonText: {
     color: '#fff',
