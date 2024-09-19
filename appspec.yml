@@ -1,9 +1,9 @@
 version: 0.0
 Resources:
-  - HelloWorld:
+  - ExternalApiCallerLambda:
       Type: AWS::Lambda::Function
       Properties:
         Name: "ExternalApiCallerLambda"
         Alias: "dev"
-        CurrentVersion: "$1"
-        TargetVersion: "$2"
+        CurrentVersion: 1
+        TargetVersion: 2
