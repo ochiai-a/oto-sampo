@@ -11,8 +11,7 @@ phases:
       - TargetVersion=$(echo $(aws lambda list-versions-by-function --function-name ExternalApiCallerLambda | grep Version | tail -1 | tr -cd "[0-9]"))
       - echo $CurrentVersion
       - echo $TargetVersion
-      - sed -i -e "s/{{CurrentVersion}}/$CurrentVersion/g" appspec.yml
-      - sed -i -e "s/{{TargetVersion}}/$TargetVersion/g" appspec.yml
+
       
 artifacts:
   files:
