@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "paths": {
+    "/api": {
+      "name": "/api",
+      "lambdaFunction": "otosanpoAPIAuth",
+      "permissions": {
+        "setting": "open"
+      }
+    },
+    "/feedback": {
+      "name": "/feedback",
+      "lambdaFunction": "APIGatewayFeedbackAuth",
+      "permissions": {
+        "setting": "open"
+      }
+    }
+  }
+}
