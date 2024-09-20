@@ -9,6 +9,14 @@
           ],
           "category": "function",
           "resourceName": "otosanpoAPIAuth"
+        },
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "APIGatewayFeedbackAuth"
         }
       ],
       "providerPlugin": "awscloudformation",
@@ -45,6 +53,11 @@
     }
   },
   "function": {
+    "APIGatewayFeedbackAuth": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "otosanpoAPIAuth": {
       "build": true,
       "providerPlugin": "awscloudformation",

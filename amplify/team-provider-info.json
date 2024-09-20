@@ -19,7 +19,8 @@
         "otosanpoAPIAuth": {
           "deploymentBucketName": "amplify-otosampo-dev-e4da3-deployment",
           "s3Key": "amplify-builds/otosanpoAPIAuth-58472f4f6e31732b4930-build.zip"
-        }
+        },
+        "APIGatewayFeedbackAuth": {}
       },
       "hosting": {
         "S3AndCloudFront": {}
