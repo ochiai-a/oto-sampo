@@ -20,13 +20,22 @@
           "deploymentBucketName": "amplify-otosampo-dev-e4da3-deployment",
           "s3Key": "amplify-builds/otosanpoAPIAuth-58472f4f6e31732b4930-build.zip"
         },
-        "APIGatewayFeedbackAuth": {}
+        "APIGatewayFeedbackAuth": {
+          "deploymentBucketName": "amplify-otosampo-dev-e4da3-deployment",
+          "s3Key": "amplify-builds/APIGatewayFeedbackAuth-796d305a7a6f61513970-build.zip"
+        }
       },
       "hosting": {
         "S3AndCloudFront": {}
       },
       "api": {
         "otosanpoAPI2": {}
+      },
+      "storage": {
+        "otosampo57f514ab": {
+          "bucketName": "input-mp3-bucket",
+          "region": "ap-northeast-1"
+        }
       }
     }
   }

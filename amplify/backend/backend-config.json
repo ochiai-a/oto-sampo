@@ -71,6 +71,22 @@
     }
   },
   "parameters": {
+    "AMPLIFY_function_APIGatewayFeedbackAuth_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "APIGatewayFeedbackAuth"
+        }
+      ]
+    },
+    "AMPLIFY_function_APIGatewayFeedbackAuth_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "APIGatewayFeedbackAuth"
+        }
+      ]
+    },
     "AMPLIFY_function_otosanpoAPIAuth_deploymentBucketName": {
       "usedBy": [
         {
@@ -86,6 +102,30 @@
           "resourceName": "otosanpoAPIAuth"
         }
       ]
+    },
+    "AMPLIFY_storage_otosampo57f514ab_bucketName": {
+      "usedBy": [
+        {
+          "category": "storage",
+          "resourceName": "otosampo57f514ab"
+        }
+      ]
+    },
+    "AMPLIFY_storage_otosampo57f514ab_region": {
+      "usedBy": [
+        {
+          "category": "storage",
+          "resourceName": "otosampo57f514ab"
+        }
+      ]
+    }
+  },
+  "storage": {
+    "otosampo57f514ab": {
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "S3",
+      "serviceType": "imported"
     }
   }
 }
