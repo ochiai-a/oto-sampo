@@ -1,8 +1,8 @@
 {
   "version": 1,
   "paths": {
-    "/{bucket}/{filename}": {
-      "name": "/{bucket}/{filename}",
+    "/api": {
+      "name": "/api",
       "lambdaFunction": "otosanpoAPIAuth",
       "permissions": {
         "setting": "open"

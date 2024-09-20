@@ -149,7 +149,14 @@
                   ]
                 }
               }
-            }
+            },
+            {
+              "DomainName": "dk5fp233a8.execute-api.ap-northeast-1.amazonaws.com",
+              "Id": "APIGatewayOrigin",
+              "CustomOriginConfig": {
+                "OriginProtocolPolicy": "https-only"
+              }
+            }            
           ],
           "Enabled": "true",
           "DefaultCacheBehavior": {
