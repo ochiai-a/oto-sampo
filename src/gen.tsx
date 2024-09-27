@@ -1,7 +1,97 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert } from "react-native";
+import { Audio } from "expo-av";
+import * as FileSystem from "expo-file-system";
 
-function Gen() {
+const Gen: React.FC = () => {
+  const [selectedTempo, setSelectedTempo] = useState<string>("普通");
+  const [selectedInstruments, setSelectedInstruments] = useState<string[]>([]);
+  const [recording, setRecording] = useState<Audio.Recording | null>(null);
+  const [isRecording, setIsRecording] = useState<boolean>(false);
+  const [recordingUri, setRecordingUri] = useState<string | null>(null);
+
+  // Delete old recording file
+  const deleteOldRecording = async () => {
+    if (recordingUri) {
+      try {
+        await FileSystem.deleteAsync(recordingUri);
+        console.log("古い録音ファイルを削除しました:", recordingUri);
+      } catch (error) {
+        console.error("録音ファイル削除中にエラーが発生しました:", error);
+      }
+    }
+  };
+
+  // Start recording
+  const startRecording = async () => {
+    try {
+      await deleteOldRecording();
+
+      const { status } = await Audio.requestPermissionsAsync();
+      if (status !== "granted") {
+        console.error("録音の権限がありません");
+        return;
+      }
+
+      const { recording } = await Audio.Recording.createAsync(
+        Audio.RecordingOptionsPresets.HIGH_QUALITY
+      );
+      setRecording(recording);
+      setIsRecording(true);
+    } catch (error) {
+      console.error("録音中にエラーが発生しました:", error);
+    }
+  };
+
+  // Stop recording
+  const stopRecording = async () => {
+    try {
+      if (recording) {
+        await recording.stopAndUnloadAsync();
+        setIsRecording(false);
+        const uri = recording.getURI();
+        if (uri) {
+          const newUri = FileSystem.documentDirectory + "recording.m4a";
+          await FileSystem.moveAsync({
+            from: uri,
+            to: newUri,
+          });
+          console.log("録音ファイルの新しい URI:", newUri);
+          setRecordingUri(newUri);
+
+          // Show selected parameters in JSON format
+          const selectedData = {
+            tempo: selectedTempo,
+            instruments: selectedInstruments,
+          };
+          const jsonData = JSON.stringify(selectedData);
+          Alert.alert("Selected Data", jsonData); // Show the selected data
+        }
+        setRecording(null);
+      }
+    } catch (error) {
+      console.error("録音停止中にエラーが発生しました:", error);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (recording) {
+        recording.stopAndUnloadAsync(); // Stop recording on component unmount
+      }
+    };
+  }, [recording]);
+
+  const handleTempoSelect = (tempo: string) => {
+    setSelectedTempo(tempo);
+  };
+
+  const handleInstrumentSelect = (instrument: string) => {
+    setSelectedInstruments((prev) =>
+      prev.includes(instrument) ? prev.filter(i => i !== instrument) : [...prev, instrument]
+    );
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.generatingBar}>
@@ -16,127 +106,69 @@ function Gen() {
         <View style={styles.optionWrapper}>
           <Text style={styles.optionLabel}>テンポ</Text>
           <View style={styles.optionRow}>
-            <View style={styles.optionItem}>
-              <Text style={styles.optionText}>遅い</Text>
-            </View>
-            <View style={[styles.optionItem, styles.optionSelected]}>
-              <Text style={styles.optionSelectedText}>普通</Text>
-            </View>
-            <View style={styles.optionItem}>
-              <Text style={styles.optionText}>早い</Text>
-            </View>
+            {["遅い", "普通", "早い"].map((tempo) => (
+              <TouchableOpacity
+                key={tempo}
+                style={[styles.optionItem, selectedTempo === tempo ? styles.optionSelected : null]}
+                onPress={() => handleTempoSelect(tempo)}
+              >
+                <Text style={styles.optionText}>{tempo}</Text>
+              </TouchableOpacity>
+            ))}
           </View>
         </View>
 
         <View style={styles.optionWrapper}>
           <Text style={styles.optionLabel}>楽器</Text>
-          <View style={styles.optionRow}>
-            {["ピアノ", "ストリング", "バイオリン", "ベース", "ギター", "ドラム"].map(
-              (instrument, index) => (
-                <View
-                  key={index}
-                  style={[styles.optionItem, instrument === "ベース" || instrument === "ギター" || instrument === "ドラム" ? styles.optionSelected : null]}>
-                  <Text style={styles.optionText}>
-                    {instrument}
-                  </Text>
-                </View>
-              )
-            )}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {["ピアノ", "ストリング", "バイオリン", "ベース", "ギター", "ドラム"].map((instrument) => (
+              <TouchableOpacity
+                key={instrument}
+                style={[styles.optionItem, selectedInstruments.includes(instrument) ? styles.optionSelected : null]}
+                onPress={() => handleInstrumentSelect(instrument)}
+              >
+                <Text style={styles.optionText}>{instrument}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* Recording Button */}
+        {isRecording ? (
+          <TouchableOpacity style={styles.button} onPress={stopRecording}>
+            <Text style={styles.buttonText}>録音停止</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.button} onPress={startRecording}>
+            <Text style={styles.buttonText}>録音開始</Text>
+          </TouchableOpacity>
+        )}
+
+        {recordingUri && (
+          <View style={styles.recordingInfo}>
+            <Text>録音完了!</Text>
+            <Text>録音ファイル: {recordingUri}</Text>
           </View>
-        </View>
-        </View>
+        )}
+      </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
-    backgroundColor: "white",
-    flex: 1, // Make the container take up available space
-    justifyContent: "flex-start", // Align children at the top
-    alignItems: "center", // Center children horizontally
-  },
-  
-  topBar: {
-    width: 360,
-    height: 45,
-    paddingHorizontal: 24,
-    paddingVertical: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-end",
-  },
-  timeText: {
-    fontSize: 14,
-    color: "#1D1B20",
-  },
-  icon: {
-    width: 24,
-    height: 24,
-    backgroundColor: "#1D1B20",
-  },
-  signalWrapper: {
-    width: 46,
-    height: 17,
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  signal: {
-    width: 17,
-    height: 17,
-    backgroundColor: "#1D1B20",
-    opacity: 0.1,
-  },
-  signalFilled: {
-    width: 17,
-    height: 17,
-    backgroundColor: "#1D1B20",
-  },
-  signalHalf: {
-    width: 8,
-    height: 15,
-    backgroundColor: "#1D1B20",
-    opacity: 0.3,
-  },
-  progressBar: {
-    width: 360,
-    height: 21,
-    justifyContent: "center",
+    flex: 1,
+    justifyContent: "flex-start",
     alignItems: "center",
-    paddingHorizontal: 126,
-  },
-  progressFill: {
-    width: 108,
-    height: 4,
-    backgroundColor: "#1D1B20",
-    borderRadius: 12,
-  },
-  gradientBackground: {
-    width: 360,
-    height: 803,
-    position: "absolute",
-    top: 800,
-    backgroundColor: "rgba(255, 0, 0, 0.5)", // Placeholder for gradient
-  },
-  timeDisplay: {
-    position: "absolute",
-    top: 302,
-    left: 113,
-    flexDirection: "row",
-    gap: 24,
-  },
-  timeMarker: {
-    fontSize: 8,
-    color: "white",
+    backgroundColor: "white",
+    padding: 22,
   },
   generatingBar: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    width: 360,
-    paddingHorizontal: 22,
-    top: 64,
+    width: "100%",
+    marginTop: 64,
   },
   generatingText: {
     color: "#8D8D8D",
@@ -146,29 +178,13 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
   },
-  generateButton: {
-    width: 220,
-    height: 60,
-    backgroundColor: "#FF32C7",
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    position: "absolute",
-    left: 71,
-    top: 642,
-  },
-  generateButtonText: {
-    color: "white",
-    fontSize: 14,
-    fontWeight: "700",
+  questionText: {
+    fontSize: 24,
+    fontWeight: 'bold',
   },
   optionsContainer: {
-    paddingHorizontal: 22,
     marginTop: 128,
-  },
-  questionText: {
-    fontSize: 28,
-    fontWeight: "700",
+    width: "100%",
   },
   optionWrapper: {
     marginTop: 22,
@@ -179,7 +195,7 @@ const styles = StyleSheet.create({
   },
   optionRow: {
     flexDirection: "row",
-    gap: 8,
+    alignItems: "center",
   },
   optionItem: {
     paddingVertical: 10,
@@ -189,6 +205,7 @@ const styles = StyleSheet.create({
     borderColor: "#BBBBBB",
     justifyContent: "center",
     alignItems: "center",
+    marginRight: 10,
   },
   optionText: {
     fontSize: 14,
@@ -197,10 +214,20 @@ const styles = StyleSheet.create({
   optionSelected: {
     backgroundColor: "#FEB9FC",
   },
-  optionSelectedText: {
-    fontSize: 14,
-    color: "black",
-    fontWeight: "700",
+  button: {
+    backgroundColor: "#FF32C7",
+    padding: 15,
+    borderRadius: 10,
+    marginTop: 30,
+    background: 'linear-gradient(242deg, #FF32C7 0%, #5642DD 100%)',
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 18,
+    textAlign: 'center',
+  },
+  recordingInfo: {
+    marginTop: 20,
   },
 });
 

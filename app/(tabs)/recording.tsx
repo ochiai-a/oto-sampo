@@ -78,21 +78,6 @@ export default function recording() {
   return (
     <View style={styles.container}>
       <Gen />
-      {isRecording ? (
-        <TouchableOpacity style={styles.button} onPress={stopRecording}>
-          <Text style={styles.buttonText}>録音停止</Text>
-        </TouchableOpacity>
-      ) : (
-        <TouchableOpacity style={styles.button} onPress={startRecording}>
-          <Text style={styles.buttonText}>録音開始</Text>
-        </TouchableOpacity>
-      )}
-      {recordingUri && (
-        <View style={styles.recordingInfo}>
-          <Text>録音完了!</Text>
-          <Text>録音ファイル: {recordingUri}</Text>
-        </View>
-      )}
     </View>
   );
 }
