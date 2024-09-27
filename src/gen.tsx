@@ -4,36 +4,10 @@ import { View, Text, StyleSheet } from "react-native";
 function Gen() {
   return (
     <View style={styles.container}>
-      <View style={styles.topBar}>
-        <Text style={styles.timeText}>9:30</Text>
-        <View style={styles.icon}></View>
-        <View style={styles.signalWrapper}>
-          <View style={styles.signal}></View>
-          <View style={styles.signalFilled}></View>
-          <View style={styles.signalHalf}></View>
-        </View>
-      </View>
-
-      <View style={styles.progressBar}>
-        <View style={styles.progressFill} />
-      </View>
-
-      <View style={styles.gradientBackground}></View>
-
-      <View style={styles.timeDisplay}>
-        <Text style={styles.timeMarker}>1:19</Text>
-        <Text style={styles.timeMarker}>リアルタイム生成中</Text>
-        <Text style={styles.timeMarker}>2:46</Text>
-      </View>
-
       <View style={styles.generatingBar}>
         <View style={styles.emptyBox}></View>
         <Text style={styles.generatingText}>GENERATING</Text>
         <View style={styles.emptyBox}></View>
-      </View>
-
-      <View style={styles.generateButton}>
-        <Text style={styles.generateButtonText}>生成</Text>
       </View>
 
       <View style={styles.optionsContainer}>
@@ -70,7 +44,6 @@ function Gen() {
             )}
           </View>
         </View>
-
         </View>
     </View>
   );
@@ -79,9 +52,12 @@ function Gen() {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    height: "100%",
     backgroundColor: "white",
+    flex: 1, // Make the container take up available space
+    justifyContent: "flex-start", // Align children at the top
+    alignItems: "center", // Center children horizontally
   },
+  
   topBar: {
     width: 360,
     height: 45,

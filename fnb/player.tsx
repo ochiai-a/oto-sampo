@@ -23,7 +23,7 @@ function Player() {
         </View>
       </View>
       <View style={styles.trackInfoContainer}>
-        <Text style={styles.trackTitle}>夜に塗られた水面</Text>
+        <Text style={styles.trackTitle}>mondo</Text>
       </View>
       <View style={styles.backgroundContainer}>
         <View style={styles.gradientBackground} />

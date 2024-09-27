@@ -5,7 +5,7 @@ function Player() {
   return (
     <View style={styles.container}>
       <View style={styles.infoContainer}>
-        <Text style={styles.title}>夜に塗られた水面</Text>
+        <Text style={styles.title}>mondo</Text>
         <Text style={styles.rating}>☆ ☆ ☆ ☆ ☆</Text>
       </View>
       <View style={styles.iconsContainer}>

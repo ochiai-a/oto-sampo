@@ -59,7 +59,7 @@ export default function MusicPlayer({ closeModal }: { closeModal: () => void }) 
 
       <View style={styles.container}>
         <View style={styles.titleWrapper}>
-          <Text style={styles.musicTitle}>曲名</Text>
+          <Text style={styles.musicTitle}>mondo</Text>
           <Text style={styles.rating}>☆☆☆☆☆</Text>
         </View>
       </View>

@@ -1,31 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Audio } from 'expo-av';
-import * as FileSystem from 'expo-file-system';
+import React, { useState, useEffect } from "react";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { Audio } from "expo-av";
+import * as FileSystem from "expo-file-system";
+import Gen from '../../src/gen'
 
 export default function recording() {
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [recordingUri, setRecordingUri] = useState<string | null>(null);
 
-
-
-
   // 古い録音ファイルを削除する関数
   const deleteOldRecording = async () => {
     if (recordingUri) {
       try {
         await FileSystem.deleteAsync(recordingUri);
-        console.log('古い録音ファイルを削除しました:', recordingUri);
+        console.log("古い録音ファイルを削除しました:", recordingUri);
       } catch (error) {
-        console.error('録音ファイル削除中にエラーが発生しました:', error);
+        console.error("録音ファイル削除中にエラーが発生しました:", error);
       }
     }
   };
-
-
-
-
 
   // 録音開始処理
   const startRecording = async () => {
@@ -34,8 +28,8 @@ export default function recording() {
       await deleteOldRecording();
 
       const { status } = await Audio.requestPermissionsAsync();
-      if (status !== 'granted') {
-        console.error('録音の権限がありません');
+      if (status !== "granted") {
+        console.error("録音の権限がありません");
         return;
       }
 
@@ -45,12 +39,9 @@ export default function recording() {
       setRecording(recording);
       setIsRecording(true);
     } catch (error) {
-      console.error('録音中にエラーが発生しました:', error);
+      console.error("録音中にエラーが発生しました:", error);
     }
   };
-
-
-
 
   // 録音停止処理
   const stopRecording = async () => {
@@ -61,18 +52,18 @@ export default function recording() {
         const uri = recording.getURI();
         if (uri) {
           // 録音ファイルをMP4形式で保存
-          const newUri = FileSystem.documentDirectory + 'recording.m4a';
+          const newUri = FileSystem.documentDirectory + "recording.m4a";
           await FileSystem.moveAsync({
             from: uri,
             to: newUri,
           });
-          console.log('録音ファイルの新しい URI:', newUri);
+          console.log("録音ファイルの新しい URI:", newUri);
           setRecordingUri(newUri);
         }
         setRecording(null);
       }
     } catch (error) {
-      console.error('録音停止中にエラーが発生しました:', error);
+      console.error("録音停止中にエラーが発生しました:", error);
     }
   };
 
@@ -86,7 +77,7 @@ export default function recording() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>録音画面</Text>
+      <Gen />
       {isRecording ? (
         <TouchableOpacity style={styles.button} onPress={stopRecording}>
           <Text style={styles.buttonText}>録音停止</Text>
@@ -109,21 +100,21 @@ export default function recording() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f5f5f5",
   },
   title: {
     fontSize: 24,
     marginBottom: 20,
   },
   button: {
-    backgroundColor: '#007bff',
+    backgroundColor: "#007bff",
     padding: 15,
     borderRadius: 5,
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
   },
   recordingInfo: {
