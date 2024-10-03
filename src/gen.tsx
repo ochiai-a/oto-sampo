@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert, Modal } from "react-native";
 import { Audio } from "expo-av";
 import * as FileSystem from "expo-file-system";
+import MusicGenerater from "./MusicGenerator";  // Import the MusicGenerater component
 
 const Gen: React.FC = () => {
   const [selectedTempo, setSelectedTempo] = useState<string>("普通");
@@ -9,6 +10,7 @@ const Gen: React.FC = () => {
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [recordingUri, setRecordingUri] = useState<string | null>(null);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);  // Manage modal visibility
 
   // Delete old recording file
   const deleteOldRecording = async () => {
@@ -43,8 +45,10 @@ const Gen: React.FC = () => {
     }
   };
 
-  // Stop recording
+  // Stop recording and show modal
   const stopRecording = async () => {
+    // Open the modal after stopping the recording
+    setModalVisible(true);
     try {
       if (recording) {
         await recording.stopAndUnloadAsync();
@@ -150,6 +154,25 @@ const Gen: React.FC = () => {
             <Text>録音ファイル: {recordingUri}</Text>
           </View>
         )}
+
+        {/* Modal to show MusicGenerater */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(false);
+          }}
+        >
+          <View style={styles.modalView}>
+            <MusicGenerater
+              selectedTempo={selectedTempo}
+              selectedInstruments={selectedInstruments}
+              recordingUri={recordingUri}
+              closeModal={() => setModalVisible(false)} // Function to close modal
+            />
+          </View>
+        </Modal>
       </View>
     </View>
   );
@@ -228,6 +251,12 @@ const styles = StyleSheet.create({
   },
   recordingInfo: {
     marginTop: 20,
+  },
+  modalView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
 });
 

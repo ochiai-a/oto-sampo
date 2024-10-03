@@ -18,7 +18,7 @@ function Library() {
         <Files />
       </ScrollView>
       <Player />
-      <Footer />
+      {/* <Footer /> */}
     </View>
   );
 }
