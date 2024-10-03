@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet } from 'react-native';
 
 interface ListItemProps {
   title: string;
@@ -18,12 +18,10 @@ function ListItem({ title, date }: ListItemProps) {
         </Text>
       </View>
       <View style={styles.iconContainer}>
-        <View style={styles.iconBackground}>
-          <View style={styles.iconLine} />
-        </View>
-        <Text style={styles.heartText}>
-          ♡
-        </Text>
+      <Image style={{ width: 16, height: 16, paddingRight: 12 }} source={require('../assets/images/option.png')} />
+      {/* <Text style={styles.heartText}>
+        ♡
+      </Text> */}
       </View>
     </View>
   );
@@ -97,6 +95,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Roboto',
     fontWeight: '400',
+    paddingLeft: 16,
   },
   filesContainer: {
     width: '100%',

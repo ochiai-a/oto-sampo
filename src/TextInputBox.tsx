@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
   container: {
     width: 320,
     height: 32,
-    marginBottom: 132,
+    marginBottom: 12,
   },
   textInput: {
     width: '100%',

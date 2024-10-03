@@ -30,8 +30,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 16,
     position: 'absolute',
-    bottom: 85,
-    left: 8,
+    bottom: 0,
+    // left: 8,
     zIndex: 1000,
     overflow: 'hidden',
     // boxSizing: 'border-box' is not needed in React Native

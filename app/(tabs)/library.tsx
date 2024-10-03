@@ -3,6 +3,8 @@ import { View, Modal, StyleSheet, SafeAreaView, TouchableOpacity, Text } from 'r
 import MusicPlayer from '../../src/MusicPlayer';
 import Library from '../../src/library';
 import Player from '../../src/player';
+import Title from '../../src/fixed/Title';
+
 
 export default function App() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -10,6 +12,9 @@ export default function App() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
+      <View style={styles.titleContainer}>
+        <Title />
+      </View>
         <Library />
 
         {/* Player component used as a modal button, fixed at the bottom */}
@@ -50,7 +55,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     backgroundColor: '#fff', // Customize this as per your need
-    padding: 10, // Padding for some spacing
     borderTopWidth: 1,
     borderTopColor: '#ccc',
   },
@@ -59,5 +63,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#222',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  titleContainer: {
+    paddingTop: 45,
   },
 });

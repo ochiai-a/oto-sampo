@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Audio } from "expo-av";
 import * as FileSystem from "expo-file-system";
 import Gen from '../../src/gen'
+import Title from '../../src/fixed/Title';
 
 export default function recording() {
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
@@ -77,6 +78,9 @@ export default function recording() {
 
   return (
     <View style={styles.container}>
+      <View style={styles.titleContainer}>
+        <Title />
+      </View>
       <Gen />
     </View>
   );
@@ -104,5 +108,8 @@ const styles = StyleSheet.create({
   },
   recordingInfo: {
     marginTop: 20,
+  },
+  titleContainer: {
+    paddingTop: 45, 
   },
 });

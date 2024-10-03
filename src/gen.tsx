@@ -3,7 +3,6 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert, Modal } fr
 import { Audio } from "expo-av";
 import * as FileSystem from "expo-file-system";
 import MusicGenerater from "./MusicGenerator";  // Import the MusicGenerater component
-import Title from './fixed/Title';
 
 const Gen: React.FC = () => {
   const [selectedTempo, setSelectedTempo] = useState<string>("普通");
@@ -99,13 +98,7 @@ const Gen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Title />
-      <View style={styles.generatingBar}>
-      </View>
-
-      <View style={styles.optionsContainer}>
-        <Text style={styles.questionText}>どんな音を作りますか？</Text>
-
+        <Text style={styles.header}>どんな音を作りますか？</Text>
         <View style={styles.optionWrapper}>
           <Text style={styles.optionLabel}>テンポ</Text>
           <View style={styles.optionRow}>
@@ -173,7 +166,6 @@ const Gen: React.FC = () => {
           </View>
         </Modal>
       </View>
-    </View>
   );
 };
 
@@ -181,38 +173,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "flex-start",
-    alignItems: "center",
+    alignItems: "flex-start",
     backgroundColor: "white",
-    padding: 22,
+    paddingLeft: 48,
+    paddingRight: 22, 
   },
-  generatingBar: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
-    marginTop: 64,
-  },
-  generatingText: {
-    color: "#8D8D8D",
-    fontSize: 14,
-  },
-  emptyBox: {
-    width: 24,
-    height: 24,
-  },
-  questionText: {
-    fontSize: 24,
+  header: {
+    fontSize: 28,
     fontWeight: 'bold',
-  },
-  optionsContainer: {
-    marginTop: 128,
-    width: "100%",
+    marginBottom: 16,
+    marginTop: 22
   },
   optionWrapper: {
     marginTop: 22,
   },
   optionLabel: {
-    fontSize: 14,
+    fontSize: 16,
     marginBottom: 8,
   },
   optionRow: {
@@ -235,6 +211,7 @@ const styles = StyleSheet.create({
   },
   optionSelected: {
     backgroundColor: "#FEB9FC",
+    color: "black",
   },
   button: {
     backgroundColor: "#FF32C7",
