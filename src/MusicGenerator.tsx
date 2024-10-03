@@ -44,7 +44,7 @@ export default function MusicPlayer({ closeModal }: { closeModal: () => void }) 
         <TouchableOpacity style={styles.favoriteButton} onPress={closeModal}>
           <FontAwesome name="chevron-left" size={20} color="white" />
         </TouchableOpacity>
-        {/* <Text style={styles.headerText}>PLAYING NOW</Text> */}
+        <Text style={styles.headerText}>NOW GENERATING</Text>
         {/* <FavoriteButton /> */}
       </View>
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Image } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Audio } from 'expo-av';
-import FavoriteButton from '../components/FavoriteButton';
+// import FavoriteButton from '../components/FavoriteButton';
 
 export default function MusicPlayer({ closeModal }: { closeModal: () => void }) {
   const [sound, setSound] = useState<Audio.Sound | null>(null);
@@ -44,8 +44,8 @@ export default function MusicPlayer({ closeModal }: { closeModal: () => void }) 
         <TouchableOpacity style={styles.favoriteButton} onPress={closeModal}>
           <FontAwesome name="chevron-left" size={20} color="white" />
         </TouchableOpacity>
-        <Text style={styles.headerText}>PLAYING NOW</Text>
-        <FavoriteButton />
+        <Text style={styles.headerText}>GENERATED</Text>
+        {/* <FavoriteButton /> */}
       </View>
 
       <View style={styles.container}>
@@ -54,13 +54,14 @@ export default function MusicPlayer({ closeModal }: { closeModal: () => void }) 
           <View style={styles.outerCircle} />
           <View style={styles.middleCircle} />
           <View style={styles.innerCircle} />
+          <Text style={styles.circleText}>ここをクリックして保存</Text>
         </View>
       </View>
 
       <View style={styles.container}>
         <View style={styles.titleWrapper}>
-          <Text style={styles.musicTitle}>mondo</Text>
-          <Text style={styles.rating}>☆☆☆☆☆</Text>
+          <Text style={styles.musicTitle}>✐ドキドキの発表会</Text>
+          <Text style={styles.rating}></Text>
         </View>
       </View>
 
