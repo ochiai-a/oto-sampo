@@ -1,242 +1,97 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet, ScrollView } from "react-native";
+import Title from './fixed/Title';
 
 function Explorer() {
   return (
-    <View>
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          paddingTop: 22,
-          paddingBottom: 22,
-          flexDirection: "column",
-          justifyContent: "flex-start",
-          alignItems: "flex-start",
-          gap: 32,
-          display: "flex",
-        }}
-      >
-        <div
-          style={{
-            flexDirection: "column",
-            justifyContent: "flex-start",
-            alignItems: "flex-start",
-            gap: 12,
-            display: "flex",
-          }}
-        >
-          <div
-            style={{
-              paddingLeft: 22,
-              paddingRight: 22,
-              justifyContent: "flex-start",
-              alignItems: "center",
-              gap: 12,
-              display: "flex",
-            }}
-          >
-            <div
-              style={{
-                color: "black",
-                fontSize: 28,
-                fontFamily: "Roboto",
-                fontWeight: "700",
-                wordWrap: "break-word",
-              }}
-            >
-              この音、インスタで
-              <br />
-              使ってみませんか
-            </div>
-            <div
-              style={{
-                width: 12.52,
-                fontSize: 16,
-                fontFamily: "Roboto",
-                fontWeight: "400",
-                wordWrap: "break-word",
-              }}
-            ></div>
-          </div>
-          <div
-            style={{
-              width: 338,
-              paddingLeft: 22,
-              justifyContent: "flex-start",
-              alignItems: "flex-start",
-              gap: 12,
-              display: "flex",
-            }}
-          >
-            <div
-              style={{
-                width: 316,
-                height: 316,
-                position: "relative",
-                borderRadius: 10,
-                border: "1px black solid",
-                backdropFilter: "blur(9.40px)",
-              }}
-            >
-              <div
-                style={{
-                  width: 316,
-                  height: 316,
-                  left: 0,
-                  top: 0,
-                  position: "absolute",
-                  background:
-                    "linear-gradient(180deg, rgba(0, 0, 0, 0) 50%, black 100%)",
-                  borderRadius: 5,
-                }}
-              />
-              <div
-                style={{
-                  width: 263.33,
-                  height: 91.29,
-                  left: 21.07,
-                  top: 201.89,
-                  position: "absolute",
-                }}
-              >
-                <span
-                  style={{
-                    color: "white",
-                    fontSize: 36,
-                    fontFamily: "Roboto",
-                    fontWeight: "700",
-                    lineHeight: 43.2,
-                    letterSpacing: 1.8,
-                    wordWrap: "break-word",
-                  }}
-                >
-                  共有数TOP10
-                  <br />
-                </span>
-                <span
-                  style={{
-                    color: "white",
-                    fontSize: 16,
-                    fontFamily: "Roboto",
-                    fontWeight: "500",
-                    lineHeight: 19.2,
-                    letterSpacing: 0.4,
-                    wordWrap: "break-word",
-                  }}
-                >
-                  <br />
-                  作った音をインスタ、Tiktokに共有
-                  <br />
-                  してポストしてみましょう。
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          style={{
-            flexDirection: "column",
-            justifyContent: "flex-start",
-            alignItems: "flex-start",
-            gap: 12,
-            display: "flex",
-          }}
-        >
-          <div
-            style={{
-              paddingLeft: 22,
-              paddingRight: 22,
-              justifyContent: "flex-start",
-              alignItems: "center",
-              gap: 12,
-              display: "flex",
-            }}
-          >
-            <div
-              style={{
-                color: "black",
-                fontSize: 28,
-                fontFamily: "Roboto",
-                fontWeight: "700",
-                wordWrap: "break-word",
-              }}
-            >
-              夏におすすめ
-            </div>
-            <div
-              style={{
-                width: 12.52,
-                fontSize: 16,
-                fontFamily: "Roboto",
-                fontWeight: "400",
-                wordWrap: "break-word",
-              }}
-            ></div>
-          </div>
-          <div
-            style={{
-              width: 338,
-              paddingLeft: 22,
-              justifyContent: "flex-start",
-              alignItems: "flex-start",
-              gap: 12,
-              display: "flex",
-            }}
-          >
-            {[
-              "世界各地の海辺で作られた音",
-              "風流を楽しもう",
-              "Lorem Ipsum",
-            ].map((text, index) => (
-              <div
-                key={index}
-                style={{
-                  width: 240,
-                  height: 180,
-                  position: "relative",
-                  borderRadius: 10,
-                  border: "1px white solid",
-                  backdropFilter: "blur(9.40px)",
-                }}
-              >
-                <div
-                  style={{
-                    width: 240,
-                    height: 180,
-                    left: 0,
-                    top: 0,
-                    position: "absolute",
-                    background:
-                      "linear-gradient(180deg, rgba(0, 0, 0, 0) 50%, black 100%)",
-                    borderRadius: 5,
-                  }}
-                />
-                <div
-                  style={{
-                    width: 200,
-                    height: 52,
-                    left: 16,
-                    top: 115,
-                    position: "absolute",
-                    color: "white",
-                    fontSize: 24,
-                    fontFamily: "Roboto",
-                    fontWeight: "500",
-                    wordWrap: "break-word",
-                  }}
-                >
-                  {text.split("<br/>").map((line, i) => (
-                    <div key={i}>{line}</div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+    <View style={styles.container}>
+      <Title />
+      <ScrollView contentContainerStyle={styles.contentContainer}>
+      <View style={styles.contentContainer}>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>この音、インスタで使ってみませんか</Text>
+          <View style={styles.imageContainer}>
+            <Image 
+              style={styles.image} 
+              source={require('../assets/images/genz.jpg')} // ここに画像ファイルを指定
+            />
+            <View style={styles.imageOverlay}>
+              <Text style={styles.overlayTitle}>共有数TOP10</Text>
+              <Text style={styles.overlaySubtitle}>作った音をインスタ、Tiktokに共有してポストしてみましょう。</Text>
+            </View>
+          </View>
+          <Text style={styles.sectionTitle}>この音、インスタで使ってみませんか</Text>
+          <View style={styles.imageContainer}>
+            <Image 
+              style={styles.image} 
+              source={require('../assets/images/genz.jpg')} // ここに画像ファイルを指定
+            />
+            <View style={styles.imageOverlay}>
+              <Text style={styles.overlayTitle}>海と夏</Text>
+              <Text style={styles.overlaySubtitle}>海が始まった　海はどうだ</Text>
+            </View>
+          </View>
+        </View>
+      </View>
+      </ScrollView>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    paddingLeft: 22,
+    paddingRight: 22,
+  },
+  contentContainer: {
+    flexGrow: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    paddingBottom: 64,
+  },
+  section: {
+    marginBottom: 32,
+  },
+  sectionTitle: {
+    fontSize: 28,
+    fontWeight: '700',
+    marginBottom: 12,
+    color: 'black',
+  },
+  imageContainer: {
+    width: 316,
+    height: 316,
+    position: 'relative',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'black',
+    overflow: 'hidden',
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+  },
+  imageOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 16,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // 半透明の黒い背景
+  },
+  overlayTitle: {
+    color: 'white',
+    fontSize: 36,
+    fontWeight: '700',
+  },
+  overlaySubtitle: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '500',
+    marginTop: 8,
+  },
+});
 
 export default Explorer;

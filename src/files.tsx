@@ -32,12 +32,6 @@ function ListItem({ title, date }: ListItemProps) {
 function Files() {
   const items = [
     { title: 'mondo', date: '2024.10.11' },
-    { title: '夜に塗られた水面', date: '2022.8.3' },
-    { title: '月が引いた白金道', date: '2022.8.3' },
-    { title: 'あなたに穿たれた心の穴', date: '2022.8.3' },
-    { title: 'Kawasaki Factory', date: '2022.8.3' },
-    { title: 'Strawberry', date: '2022.8.3' },
-    { title: '邂逅', date: '2022.8.3' },
   ];
 
   return (

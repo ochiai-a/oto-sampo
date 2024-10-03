@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert, Modal } fr
 import { Audio } from "expo-av";
 import * as FileSystem from "expo-file-system";
 import MusicGenerater from "./MusicGenerator";  // Import the MusicGenerater component
+import Title from './fixed/Title';
 
 const Gen: React.FC = () => {
   const [selectedTempo, setSelectedTempo] = useState<string>("普通");
@@ -98,10 +99,8 @@ const Gen: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <Title />
       <View style={styles.generatingBar}>
-        <View style={styles.emptyBox}></View>
-        <Text style={styles.generatingText}>GENERATING</Text>
-        <View style={styles.emptyBox}></View>
       </View>
 
       <View style={styles.optionsContainer}>

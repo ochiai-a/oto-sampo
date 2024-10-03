@@ -17,7 +17,7 @@ function Library() {
         <Bigbutton />
         <Files />
       </ScrollView>
-      <Player />
+      {/* <Player /> */}
       {/* <Footer /> */}
     </View>
   );

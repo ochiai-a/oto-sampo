@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet } from 'react-native';
 
 function Title() {
   return (
@@ -10,7 +10,7 @@ function Title() {
       <View style={styles.iconContainer}>
         <View style={styles.iconWrapper}>
           <View style={styles.iconInner}>
-            <View style={styles.iconBackground} />
+              <Image style={{ width: 36, height: 36 }} source={require('../../assets/images/container.png')} />
           </View>
         </View>
       </View>
