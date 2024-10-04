@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet } from 'react-native';
 
 function Player() {
   return (
@@ -10,10 +10,10 @@ function Player() {
       </View>
       <View style={styles.iconsContainer}>
         <View style={styles.icon}>
-          <View style={styles.playIcon} />
+          <Image style={{ width: 24, height: 24 }} source={require('../assets/images/get-played.png')} />
         </View>
         <View style={styles.icon}>
-          <View style={styles.pauseIcon} />
+          <Image style={{ width: 24, height: 24 }} source={require('../assets/images/get-skipped.png')} />
         </View>
       </View>
     </View>
@@ -22,19 +22,18 @@ function Player() {
 
 const styles = StyleSheet.create({
   container: {
-    width: 360,
+    width: '100%',
     height: 64,
     paddingRight: 20,
     backgroundColor: '#F3EDF7',
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'center',  // 水平方向の中央揃え
+    justifyContent: 'center', // 垂直方向の中央揃え
     gap: 16,
     position: 'absolute',
     bottom: 0,
-    // left: 8,
     zIndex: 1000,
     overflow: 'hidden',
-    // boxSizing: 'border-box' is not needed in React Native
   },
   infoContainer: {
     width: 264,

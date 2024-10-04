@@ -1,20 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Modal, StyleSheet, SafeAreaView, TouchableOpacity, Text } from 'react-native';
 import MusicPlayer from '../../src/MusicPlayer';
 import Library from '../../src/library';
 import Player from '../../src/player';
 import Title from '../../src/fixed/Title';
-
+import { Audio } from 'expo-av';
 
 export default function App() {
   const [modalVisible, setModalVisible] = useState(false);
+  const [sound, setSound] = useState<Audio.Sound | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  useEffect(() => {
+    return sound
+      ? () => {
+          sound.unloadAsync(); // Unload sound when component unmounts
+        }
+      : undefined;
+  }, [sound]);
+
+  // Function to play audio
+  async function playSound() {
+    if (sound) {
+      await sound.stopAsync(); // Stop previous sound if playing
+    }
+    const { sound: newSound } = await Audio.Sound.createAsync(
+      require('../../assets/music/mondo_01.mp3')  // Replace with the path to your music file
+    );
+    setSound(newSound);
+    setIsPlaying(true);
+    await newSound.playAsync();
+  }
+
+  // Function to stop audio
+  async function stopSound() {
+    if (sound) {
+      await sound.stopAsync();
+      await sound.unloadAsync(); // Unload the sound to free resources
+      setSound(null);
+      setIsPlaying(false);
+    }
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-      <View style={styles.titleContainer}>
-        <Title />
-      </View>
+        <View style={styles.titleContainer}>
+          <Title />
+        </View>
+
         <Library />
 
         {/* Player component used as a modal button, fixed at the bottom */}
@@ -30,8 +64,13 @@ export default function App() {
           onRequestClose={() => setModalVisible(false)}
         >
           <View style={styles.modalView}>
-            {/* Pass setModalVisible to MusicPlayer */}
-            <MusicPlayer closeModal={() => setModalVisible(false)} />
+            {/* Pass control functions and state to MusicPlayer */}
+            <MusicPlayer
+              closeModal={() => setModalVisible(false)}
+              playSound={playSound}
+              stopSound={stopSound}
+              isPlaying={isPlaying}
+            />
           </View>
         </Modal>
       </View>

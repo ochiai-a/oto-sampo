@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Audio } from 'expo-av';
-import FavoriteButton from '../components/FavoriteButton';
 
-export default function MusicGenerater({ closeModal, openDownloader }: { closeModal: () => void; openDownloader: () => void }) {
+export default function MusicGenerater({ closeModal }: { closeModal: () => void }) {
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
@@ -19,17 +18,17 @@ export default function MusicGenerater({ closeModal, openDownloader }: { closeMo
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
-        {/* Close modal on chevron-left click */}
         <TouchableOpacity style={styles.favoriteButton} onPress={closeModal}>
           <FontAwesome name="chevron-left" size={20} color="white" />
         </TouchableOpacity>
         <Text style={styles.headerText}>NOW GENERATING</Text>
-        {/* <FavoriteButton /> */}
+        <TouchableOpacity style={styles.favoriteButton}>
+          <Text>♡</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.container}>
         <View style={styles.circleContainer}>
-          {/* The circles will now be layered on top of each other */}
           <View style={styles.outerCircle} />
           <View style={styles.middleCircle} />
           <View style={styles.innerCircle} />
@@ -50,6 +49,7 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#222',
+    width: '100%',
   },
   header: {
     paddingHorizontal: 20,
@@ -65,14 +65,16 @@ const styles = StyleSheet.create({
   },
   favoriteButton: {},
   container: {
-    paddingTop: 20,
+    paddingTop: 100,
+    flex: 1,  // Added to make the container take full height
+    // justifyContent: 'center', // Centers the content vertically
+    alignItems: 'center', // Centers the content horizontally
   },
   circleContainer: {
     width: 240,
     height: 240,
     justifyContent: 'center',  // Centers the circles within the container
     alignItems: 'center',       // Centers the circles horizontally
-    position: 'relative',       // This makes sure the child circles are positioned relative to this container
   },
   outerCircle: {
     width: 240,
@@ -102,7 +104,7 @@ const styles = StyleSheet.create({
   },
   titleWrapper: {
     alignItems: 'center',
-    marginTop: 160,
+    marginTop: 20, // Adjust margin if necessary
     paddingVertical: 10,
   },
   musicTitle: {

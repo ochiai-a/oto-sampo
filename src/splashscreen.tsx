@@ -9,7 +9,7 @@ function SplashScreen() {
         <View style={styles.middleCircle} />
         <View style={styles.innerCircle} />
       </View>
-      <Text style={styles.text}>OTOSANPO♪</Text>
+      <Text style={styles.text}>OTOSAMPO♪</Text>
     </View>
   );
 }

@@ -5,7 +5,7 @@ function Title() {
   return (
     <View style={styles.container}>
       <View style={styles.title}>
-        <Text style={styles.titleText}>OTOSANPO♪</Text>
+        <Text style={styles.titleText}>OTOSAMPO♪</Text>
       </View>
       <View style={styles.iconContainer}>
         <View style={styles.iconWrapper}>

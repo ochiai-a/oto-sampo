@@ -40,32 +40,28 @@ export default function MusicPlayer({ closeModal }: { closeModal: () => void }) 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
-        {/* Close modal on chevron-left click */}
         <TouchableOpacity style={styles.favoriteButton} onPress={closeModal}>
           <FontAwesome name="chevron-left" size={20} color="white" />
         </TouchableOpacity>
         <Text style={styles.headerText}>REVIEW</Text>
-        {/* <FavoriteButton /> */}
+        <TouchableOpacity style={styles.favoriteButton}>
+          <Text>♡</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.container}>
         <View style={styles.circleContainer}>
-          {/* The circles will now be layered on top of each other */}
           <View style={styles.outerCircle} />
           <View style={styles.middleCircle} />
           <View style={styles.innerCircle} />
           <Text style={styles.circleText}>ここをクリックして保存</Text>
         </View>
-      </View>
 
-      <View style={styles.container}>
         <View style={styles.titleWrapper}>
           <Text style={styles.musicTitle}>✐感想を入力してください</Text>
           <Text style={styles.rating}></Text>
         </View>
-      </View>
 
-      <View style={styles.container}>
         <View style={styles.buttonWrapper}>
           {isPlaying ? (
             <TouchableOpacity style={styles.musicButton} onPress={stopSound}>
@@ -85,6 +81,7 @@ export default function MusicPlayer({ closeModal }: { closeModal: () => void }) 
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
+    width: '100%',
     backgroundColor: '#222',
   },
   header: {
@@ -101,14 +98,16 @@ const styles = StyleSheet.create({
   },
   favoriteButton: {},
   container: {
-    paddingTop: 20,
+    flex: 1,
+    // justifyContent: 'center', // Centers content vertically
+    alignItems: 'center', // Centers content horizontally
+    paddingTop: 100, // Match this to MusicGenerater
   },
   circleContainer: {
     width: 240,
     height: 240,
-    justifyContent: 'center',  // Centers the circles within the container
-    alignItems: 'center',       // Centers the circles horizontally
-    position: 'relative',       // This makes sure the child circles are positioned relative to this container
+    justifyContent: 'center', // Centers the circles within the container
+    alignItems: 'center', // Centers the circles horizontally
   },
   outerCircle: {
     width: 240,
@@ -117,7 +116,7 @@ const styles = StyleSheet.create({
     borderRadius: 120,
     borderWidth: 0.91,
     borderColor: 'white',
-    position: 'absolute',  // Layer this circle on top
+    position: 'absolute', // Layer this circle on top
   },
   middleCircle: {
     width: 230,
@@ -126,7 +125,7 @@ const styles = StyleSheet.create({
     borderRadius: 115,
     borderWidth: 0.91,
     borderColor: 'white',
-    position: 'absolute',  // Layer this circle on top
+    position: 'absolute', // Layer this circle on top
   },
   innerCircle: {
     width: 210,
@@ -134,14 +133,14 @@ const styles = StyleSheet.create({
     borderRadius: 105,
     borderWidth: 1,
     borderColor: 'white',
-    position: 'absolute',  // Layer this circle on top
+    position: 'absolute', // Layer this circle on top
   },
   circleText: {
     color: 'white',
   },
   titleWrapper: {
     alignItems: 'center',
-    marginTop: 160,
+    marginTop: 100, // Adjust to match your design needs
     paddingVertical: 10,
   },
   musicTitle: {
@@ -158,6 +157,7 @@ const styles = StyleSheet.create({
   buttonWrapper: {
     flexDirection: 'row',
     marginBottom: 20,
+    marginTop: 40,
     justifyContent: 'center',
   },
   musicButton: {

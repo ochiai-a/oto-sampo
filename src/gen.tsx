@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert, Modal } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Modal } from "react-native";
 import { Audio } from "expo-av";
 import * as FileSystem from "expo-file-system";
 import MusicGenerater from "./MusicGenerator";  // Import the MusicGenerater component
 import MusicDownloader from "./MusicDownloader"; // Import the MusicDownloader component
-import MusicReviewer from "./MusicReviewer"; // Import the MusicDownloader component
+import MusicReviewer from "./MusicReviewer"; // Import the MusicReviewer component
 
 const Gen: React.FC = () => {
   const [selectedTempo, setSelectedTempo] = useState<string>("普通");
@@ -12,9 +12,9 @@ const Gen: React.FC = () => {
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [recordingUri, setRecordingUri] = useState<string | null>(null);
-  const [modalVisible, setModalVisible] = useState<boolean>(false);  // Manage modal visibility
-  const [secondModalVisible, setSecondModalVisible] = useState<boolean>(false); // For MusicDownloader
-  const [thirdModalVisible, setThirdModalVisible] = useState<boolean>(false); // For MusicDownloader
+  const [modalVisible, setModalVisible] = useState<boolean>(false);  // MusicGenerator modal
+  const [secondModalVisible, setSecondModalVisible] = useState<boolean>(false); // MusicDownloader modal
+  const [thirdModalVisible, setThirdModalVisible] = useState<boolean>(false); // MusicReviewer modal
 
   // Delete old recording file
   const deleteOldRecording = async () => {
@@ -98,10 +98,6 @@ const Gen: React.FC = () => {
 
   const closeMusicDownloader = () => {
     setSecondModalVisible(false); // Close MusicDownloader modal
-  };
-
-  const openMusicReviewer = () => {
-    setModalVisible(false); // Close MusicGenerator modal
     setThirdModalVisible(true); // Open MusicReviewer modal
   };
 
@@ -181,7 +177,7 @@ const Gen: React.FC = () => {
 
       {/* Modal to show MusicDownloader */}
       <Modal
-        animationType="slide"
+        // animationType="slide"
         transparent={true}
         visible={secondModalVisible}
         onRequestClose={closeMusicDownloader}
@@ -191,11 +187,11 @@ const Gen: React.FC = () => {
         </View>
       </Modal>
 
-      {/* Modal to show MusicDownloader */}
+      {/* Modal to show MusicReviewer */}
       <Modal
-        animationType="slide"
+        // animationType="slide"
         transparent={true}
-        visible={secondModalVisible}
+        visible={thirdModalVisible} // Use thirdModalVisible for MusicReviewer
         onRequestClose={closeMusicReviewer}
       >
         <View style={styles.modalView}>
@@ -218,7 +214,6 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 16,
     marginTop: 22
   },
   optionWrapper: {
