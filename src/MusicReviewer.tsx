@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Image } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Audio } from 'expo-av';
-import FavoriteButton from '../components/FavoriteButton';
+// import FavoriteButton from '../components/FavoriteButton';
 
-export default function MusicGenerater({ closeModal, openDownloader }: { closeModal: () => void; openDownloader: () => void }) {
+export default function MusicPlayer({ closeModal }: { closeModal: () => void }) {
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
@@ -16,6 +16,27 @@ export default function MusicGenerater({ closeModal, openDownloader }: { closeMo
       : undefined;
   }, [sound]);
 
+  async function playSound() {
+    if (sound) {
+      await sound.stopAsync();
+    }
+    const { sound: newSound } = await Audio.Sound.createAsync(
+      require('../assets/music/mondo_01.mp3')
+    );
+    setSound(newSound);
+    setIsPlaying(true);
+    await newSound.playAsync();
+  }
+
+  async function stopSound() {
+    if (sound) {
+      await sound.stopAsync();
+      await sound.unloadAsync();
+      setIsPlaying(false);
+      setSound(null);
+    }
+  }
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
@@ -23,7 +44,7 @@ export default function MusicGenerater({ closeModal, openDownloader }: { closeMo
         <TouchableOpacity style={styles.favoriteButton} onPress={closeModal}>
           <FontAwesome name="chevron-left" size={20} color="white" />
         </TouchableOpacity>
-        <Text style={styles.headerText}>NOW GENERATING</Text>
+        <Text style={styles.headerText}>REVIEW</Text>
         {/* <FavoriteButton /> */}
       </View>
 
@@ -33,13 +54,28 @@ export default function MusicGenerater({ closeModal, openDownloader }: { closeMo
           <View style={styles.outerCircle} />
           <View style={styles.middleCircle} />
           <View style={styles.innerCircle} />
+          <Text style={styles.circleText}>ここをクリックして保存</Text>
         </View>
       </View>
 
       <View style={styles.container}>
         <View style={styles.titleWrapper}>
-          <Text style={styles.musicTitle}>あなたの音を作っています</Text>
-          <Text style={styles.rating}>しばらくお待ちください</Text>
+          <Text style={styles.musicTitle}>✐感想を入力してください</Text>
+          <Text style={styles.rating}></Text>
+        </View>
+      </View>
+
+      <View style={styles.container}>
+        <View style={styles.buttonWrapper}>
+          {isPlaying ? (
+            <TouchableOpacity style={styles.musicButton} onPress={stopSound}>
+              <Image style={{ width: 76, height: 76 }} source={require('../assets/images/playButton1.png')} />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity style={styles.musicButton} onPress={playSound}>
+              <Image style={{ width: 76, height: 76 }} source={require('../assets/images/playButton0.png')} />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </SafeAreaView>
@@ -99,6 +135,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'white',
     position: 'absolute',  // Layer this circle on top
+  },
+  circleText: {
+    color: 'white',
   },
   titleWrapper: {
     alignItems: 'center',

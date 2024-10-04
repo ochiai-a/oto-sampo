@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Image } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Audio } from 'expo-av';
-import FavoriteButton from '../components/FavoriteButton';
 
-export default function MusicPlayer({ closeModal }: { closeModal: () => void }) {
+export default function MusicPlayer({ closeModal, openMusicDownloader }) {
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
@@ -40,27 +39,26 @@ export default function MusicPlayer({ closeModal }: { closeModal: () => void }) 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
-        {/* Close modal on chevron-left click */}
         <TouchableOpacity style={styles.favoriteButton} onPress={closeModal}>
           <FontAwesome name="chevron-left" size={20} color="white" />
         </TouchableOpacity>
-        <Text style={styles.headerText}>PLAYING NOW</Text>
-        <FavoriteButton />
+        <Text style={styles.headerText}>GENERATED</Text>
       </View>
 
       <View style={styles.container}>
-        <View style={styles.circleContainer}>
-          {/* The circles will now be layered on top of each other */}
-          <View style={styles.outerCircle} />
-          <View style={styles.middleCircle} />
-          <View style={styles.innerCircle} />
-        </View>
+        <TouchableOpacity onPress={openMusicDownloader}>
+          <View style={styles.circleContainer}>
+            <View style={styles.outerCircle} />
+            <View style={styles.middleCircle} />
+            <View style={styles.innerCircle} />
+            <Text style={styles.circleText}>ここをクリックして保存</Text>
+          </View>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.container}>
         <View style={styles.titleWrapper}>
-          <Text style={styles.musicTitle}>mondo</Text>
-          <Text style={styles.rating}>☆☆☆☆☆</Text>
+          <Text style={styles.musicTitle}>✐ドキドキの発表会</Text>
         </View>
       </View>
 
@@ -80,6 +78,7 @@ export default function MusicPlayer({ closeModal }: { closeModal: () => void }) 
     </SafeAreaView>
   );
 }
+
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -105,9 +104,9 @@ const styles = StyleSheet.create({
   circleContainer: {
     width: 240,
     height: 240,
-    justifyContent: 'center',  // Centers the circles within the container
-    alignItems: 'center',       // Centers the circles horizontally
-    position: 'relative',       // This makes sure the child circles are positioned relative to this container
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
   },
   outerCircle: {
     width: 240,
@@ -116,7 +115,7 @@ const styles = StyleSheet.create({
     borderRadius: 120,
     borderWidth: 0.91,
     borderColor: 'white',
-    position: 'absolute',  // Layer this circle on top
+    position: 'absolute',
   },
   middleCircle: {
     width: 230,
@@ -125,7 +124,7 @@ const styles = StyleSheet.create({
     borderRadius: 115,
     borderWidth: 0.91,
     borderColor: 'white',
-    position: 'absolute',  // Layer this circle on top
+    position: 'absolute',
   },
   innerCircle: {
     width: 210,
@@ -133,7 +132,7 @@ const styles = StyleSheet.create({
     borderRadius: 105,
     borderWidth: 1,
     borderColor: 'white',
-    position: 'absolute',  // Layer this circle on top
+    position: 'absolute',
   },
   circleText: {
     color: 'white',

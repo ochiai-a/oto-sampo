@@ -3,6 +3,8 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert, Modal } fr
 import { Audio } from "expo-av";
 import * as FileSystem from "expo-file-system";
 import MusicGenerater from "./MusicGenerator";  // Import the MusicGenerater component
+import MusicDownloader from "./MusicDownloader"; // Import the MusicDownloader component
+import MusicReviewer from "./MusicReviewer"; // Import the MusicDownloader component
 
 const Gen: React.FC = () => {
   const [selectedTempo, setSelectedTempo] = useState<string>("普通");
@@ -11,6 +13,8 @@ const Gen: React.FC = () => {
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [recordingUri, setRecordingUri] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState<boolean>(false);  // Manage modal visibility
+  const [secondModalVisible, setSecondModalVisible] = useState<boolean>(false); // For MusicDownloader
+  const [thirdModalVisible, setThirdModalVisible] = useState<boolean>(false); // For MusicDownloader
 
   // Delete old recording file
   const deleteOldRecording = async () => {
@@ -47,8 +51,7 @@ const Gen: React.FC = () => {
 
   // Stop recording and show modal
   const stopRecording = async () => {
-    // Open the modal after stopping the recording
-    setModalVisible(true);
+    setModalVisible(true); // Open MusicGenerator modal
     try {
       if (recording) {
         await recording.stopAndUnloadAsync();
@@ -62,14 +65,6 @@ const Gen: React.FC = () => {
           });
           console.log("録音ファイルの新しい URI:", newUri);
           setRecordingUri(newUri);
-
-          // Show selected parameters in JSON format
-          const selectedData = {
-            tempo: selectedTempo,
-            instruments: selectedInstruments,
-          };
-          const jsonData = JSON.stringify(selectedData);
-          Alert.alert("Selected Data", jsonData); // Show the selected data
         }
         setRecording(null);
       }
@@ -96,76 +91,118 @@ const Gen: React.FC = () => {
     );
   };
 
+  const openMusicDownloader = () => {
+    setModalVisible(false); // Close MusicGenerator modal
+    setSecondModalVisible(true); // Open MusicDownloader modal
+  };
+
+  const closeMusicDownloader = () => {
+    setSecondModalVisible(false); // Close MusicDownloader modal
+  };
+
+  const openMusicReviewer = () => {
+    setModalVisible(false); // Close MusicGenerator modal
+    setThirdModalVisible(true); // Open MusicReviewer modal
+  };
+
+  const closeMusicReviewer = () => {
+    setThirdModalVisible(false); // Close MusicReviewer modal
+  };
+
   return (
     <View style={styles.container}>
-        <Text style={styles.header}>どんな音を作りますか？</Text>
-        <View style={styles.optionWrapper}>
-          <Text style={styles.optionLabel}>テンポ</Text>
-          <View style={styles.optionRow}>
-            {["遅い", "普通", "早い"].map((tempo) => (
-              <TouchableOpacity
-                key={tempo}
-                style={[styles.optionItem, selectedTempo === tempo ? styles.optionSelected : null]}
-                onPress={() => handleTempoSelect(tempo)}
-              >
-                <Text style={styles.optionText}>{tempo}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+      <Text style={styles.header}>どんな音を作りますか？</Text>
+      <View style={styles.optionWrapper}>
+        <Text style={styles.optionLabel}>テンポ</Text>
+        <View style={styles.optionRow}>
+          {["遅い", "普通", "早い"].map((tempo) => (
+            <TouchableOpacity
+              key={tempo}
+              style={[styles.optionItem, selectedTempo === tempo ? styles.optionSelected : null]}
+              onPress={() => handleTempoSelect(tempo)}
+            >
+              <Text style={styles.optionText}>{tempo}</Text>
+            </TouchableOpacity>
+          ))}
         </View>
-
-        <View style={styles.optionWrapper}>
-          <Text style={styles.optionLabel}>楽器</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {["ピアノ", "ストリング", "バイオリン", "ベース", "ギター", "ドラム"].map((instrument) => (
-              <TouchableOpacity
-                key={instrument}
-                style={[styles.optionItem, selectedInstruments.includes(instrument) ? styles.optionSelected : null]}
-                onPress={() => handleInstrumentSelect(instrument)}
-              >
-                <Text style={styles.optionText}>{instrument}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
-
-        {/* Recording Button */}
-        {isRecording ? (
-          <TouchableOpacity style={styles.button} onPress={stopRecording}>
-            <Text style={styles.buttonText}>録音停止</Text>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity style={styles.button} onPress={startRecording}>
-            <Text style={styles.buttonText}>録音開始</Text>
-          </TouchableOpacity>
-        )}
-
-        {recordingUri && (
-          <View style={styles.recordingInfo}>
-            <Text>録音完了!</Text>
-            <Text>録音ファイル: {recordingUri}</Text>
-          </View>
-        )}
-
-        {/* Modal to show MusicGenerater */}
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            setModalVisible(false);
-          }}
-        >
-          <View style={styles.modalView}>
-            <MusicGenerater
-              selectedTempo={selectedTempo}
-              selectedInstruments={selectedInstruments}
-              recordingUri={recordingUri}
-              closeModal={() => setModalVisible(false)} // Function to close modal
-            />
-          </View>
-        </Modal>
       </View>
+
+      <View style={styles.optionWrapper}>
+        <Text style={styles.optionLabel}>楽器</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {["ピアノ", "ストリング", "バイオリン", "ベース", "ギター", "ドラム"].map((instrument) => (
+            <TouchableOpacity
+              key={instrument}
+              style={[styles.optionItem, selectedInstruments.includes(instrument) ? styles.optionSelected : null]}
+              onPress={() => handleInstrumentSelect(instrument)}
+            >
+              <Text style={styles.optionText}>{instrument}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+
+      {/* Recording Button */}
+      {isRecording ? (
+        <TouchableOpacity style={styles.button} onPress={stopRecording}>
+          <Text style={styles.buttonText}>録音停止</Text>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity style={styles.button} onPress={startRecording}>
+          <Text style={styles.buttonText}>録音開始</Text>
+        </TouchableOpacity>
+      )}
+
+      {recordingUri && (
+        <View style={styles.recordingInfo}>
+          <Text>録音完了!</Text>
+          <Text>録音ファイル: {recordingUri}</Text>
+        </View>
+      )}
+
+      {/* Modal to show MusicGenerater */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(false);
+        }}
+      >
+        <View style={styles.modalView}>
+          <MusicGenerater
+            selectedTempo={selectedTempo}
+            selectedInstruments={selectedInstruments}
+            recordingUri={recordingUri}
+            closeModal={openMusicDownloader} // Function to open MusicDownloader modal
+          />
+        </View>
+      </Modal>
+
+      {/* Modal to show MusicDownloader */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={secondModalVisible}
+        onRequestClose={closeMusicDownloader}
+      >
+        <View style={styles.modalView}>
+          <MusicDownloader closeModal={closeMusicDownloader} />
+        </View>
+      </Modal>
+
+      {/* Modal to show MusicDownloader */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={secondModalVisible}
+        onRequestClose={closeMusicReviewer}
+      >
+        <View style={styles.modalView}>
+          <MusicReviewer closeModal={closeMusicReviewer} />
+        </View>
+      </Modal>
+    </View>
   );
 };
 

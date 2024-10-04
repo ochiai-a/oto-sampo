@@ -4,7 +4,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Audio } from 'expo-av';
 // import FavoriteButton from '../components/FavoriteButton';
 
-export default function MusicPlayer({ closeModal }: { closeModal: () => void }) {
+export default function MusicDownloader({ closeModal, openReviewer }: { closeModal: () => void; openReviewer: () => void }) {
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
@@ -54,7 +54,7 @@ export default function MusicPlayer({ closeModal }: { closeModal: () => void }) 
           <View style={styles.outerCircle} />
           <View style={styles.middleCircle} />
           <View style={styles.innerCircle} />
-          <Text style={styles.circleText}>ここをクリックして保存</Text>
+          {/* <Text style={styles.circleText}>ここをクリックして保存</Text> */}
         </View>
       </View>
 
