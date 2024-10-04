@@ -24,10 +24,12 @@ export default function MusicGenerater({
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [stepFunctionResponse, setStepFunctionResponse] = useState<any>(null); // ステータスを保存
 
-  const asset = Asset.fromModule(require('../assets/music/test.mp3'));
-  const fileUri = asset.uri; // アセットのURIを取得
+  const [fileUri, setFileUri] = useState<string | null>(null);
 
   useEffect(() => {
+    // コンポーネントがマウントされたときにアップロード機能を呼び出す
+    uploadFile();
+
     return sound
       ? () => {
           sound.unloadAsync();
@@ -35,10 +37,29 @@ export default function MusicGenerater({
       : undefined;
   }, [sound]);
 
+  // 2. 音楽ファイルを選択する関数
+  const selectFile = async () => {
+    try {
+      const asset = Asset.fromModule(require('../assets/music/test.mp3'));
+      await asset.downloadAsync(); // アセットをダウンロード
+      const localFilePath = asset.localUri || ''; // ローカルURIを取得
+
+      const fileInfo = await FileSystem.getInfoAsync(localFilePath);
+      if (fileInfo.exists) {
+        setFileUri(localFilePath);
+        uploadFile(); // ファイルをアップロードする
+      } else {
+        Alert.alert("エラー", "指定されたファイルが見つかりません");
+      }
+    } catch (error) {
+      Alert.alert("エラー", "ファイルの選択中にエラーが発生しました");
+    }
+  };
+
   // 3. 音楽ファイルをPresigned URLに送信する関数
   const uploadFile = async () => {
     if (!fileUri || !uploadUrl) {
-      Alert.alert("エラー", "アップロードするファイルがありません");
+      Alert.alert("エラー", "アップロードするファイルまたはURLを選択してください");
       return;
     }
 
@@ -61,37 +82,37 @@ export default function MusicGenerater({
       Alert.alert("アップロードエラー", error.message);
     }
   };
-  
-    // 4. StepFunctionのAPIを呼び出す関数
-    const callStepFunction = async () => {
-      try {
-        const response = await fetch('https://ihce7qjrhd.execute-api.ap-northeast-1.amazonaws.com/dev/api/generateMusic', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            user_id: userId, // 固定されたuserIdを使用
-            file_name: fileName,
-          }),
-        });
-  
-        const data = await response.json();
-  
-        if (response.ok) {
-          Alert.alert("Step Function 実行", "Step Functionが正常に開始されました");
-          setStepFunctionResponse({ user_id: userId, file_name: fileName }); // レスポンスを保存
-        } else {
-          Alert.alert('Error', data.message || 'Step Functionの実行中にエラーが発生しました');
-        }
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          Alert.alert('Error', error.message);
-        } else {
-          Alert.alert('Error', 'An unknown error occurred.');
-        }
+
+  // 4. StepFunctionのAPIを呼び出す関数
+  const callStepFunction = async () => {
+    try {
+      const response = await fetch('https://ihce7qjrhd.execute-api.ap-northeast-1.amazonaws.com/dev/api/generateMusic', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: userId, // 固定されたuserIdを使用
+          file_name: fileName,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        Alert.alert("Step Function 実行", "Step Functionが正常に開始されました");
+        setStepFunctionResponse({ user_id: userId, file_name: fileName }); // レスポンスを保存
+      } else {
+        Alert.alert('Error', data.message || 'Step Functionの実行中にエラーが発生しました');
       }
-    };
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        Alert.alert('Error', error.message);
+      } else {
+        Alert.alert('Error', 'An unknown error occurred.');
+      }
+    }
+  };
 
 
   return (
@@ -123,10 +144,11 @@ export default function MusicGenerater({
 
       <View style={styles.container}>
         {/* 受け取った値を表示 */}
-        {/* <Text style={styles.musicTitle}>録音ファイル情報</Text>
+        {/* <Text style={styles.musicTitle}>録音ファイル情報</Text> */}
         <Text style={styles.infoText}>ファイル名: {fileName}</Text>
-        <Text style={styles.infoText}>アップロードURL: {uploadUrl}</Text>
-        <Text style={styles.infoText}>録音URI: {recordingUri}</Text> */}
+        <Text style={styles.infoText}>ファイルURL: {fileUri}</Text> 
+        {/* <Text style={styles.infoText}>アップロードURL: {uploadUrl}</Text> */}
+        {/* <Text style={styles.infoText}>録音URI: {recordingUri}</Text> */}
       </View>
 
       {/* ステップファンクションのレスポンスを表示 */}
