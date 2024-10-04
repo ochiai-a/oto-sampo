@@ -4,7 +4,7 @@ import { Audio } from "expo-av";
 import * as FileSystem from "expo-file-system";
 import MusicGenerater from "./MusicGenerator";  // Import the MusicGenerater component
 import MusicDownloader from "./MusicDownloader"; // Import the MusicDownloader component
-import MusicReviewer from "./MusicReviewer"; // Import the MusicDownloader component
+import MusicReviewer from "./MusicReviewer"; // Import the MusicReviewer component
 
 const Gen: React.FC = () => {
   const [selectedTempo, setSelectedTempo] = useState<string>("普通");
@@ -12,9 +12,12 @@ const Gen: React.FC = () => {
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [recordingUri, setRecordingUri] = useState<string | null>(null);
-  const [modalVisible, setModalVisible] = useState<boolean>(false);  // Manage modal visibility
-  const [secondModalVisible, setSecondModalVisible] = useState<boolean>(false); // For MusicDownloader
-  const [thirdModalVisible, setThirdModalVisible] = useState<boolean>(false); // For MusicDownloader
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [secondModalVisible, setSecondModalVisible] = useState<boolean>(false);
+  const [thirdModalVisible, setThirdModalVisible] = useState<boolean>(false);
+  const [fileName, setFileName] = useState<string | null>(null); // Add state for file name
+  const [uploadUrl, setUploadUrl] = useState<string | null>(null); // Add state for upload URL
+  const userId = "OTOtest"; // ここでユーザーIDを定義
 
   // Delete old recording file
   const deleteOldRecording = async () => {
@@ -32,13 +35,11 @@ const Gen: React.FC = () => {
   const startRecording = async () => {
     try {
       await deleteOldRecording();
-
       const { status } = await Audio.requestPermissionsAsync();
       if (status !== "granted") {
         console.error("録音の権限がありません");
         return;
       }
-
       const { recording } = await Audio.Recording.createAsync(
         Audio.RecordingOptionsPresets.HIGH_QUALITY
       );
@@ -51,7 +52,7 @@ const Gen: React.FC = () => {
 
   // Stop recording and show modal
   const stopRecording = async () => {
-    setModalVisible(true); // Open MusicGenerator modal
+    setModalVisible(true);
     try {
       if (recording) {
         await recording.stopAndUnloadAsync();
@@ -65,11 +66,42 @@ const Gen: React.FC = () => {
           });
           console.log("録音ファイルの新しい URI:", newUri);
           setRecordingUri(newUri);
+          await getPresignedURL(); // Call getPresignedURL here
         }
         setRecording(null);
       }
     } catch (error) {
       console.error("録音停止中にエラーが発生しました:", error);
+    }
+  };
+
+  // 1. Presigned URLを取得する関数
+  const getPresignedURL = async () => {
+    try {
+      const response = await fetch('https://ihce7qjrhd.execute-api.ap-northeast-1.amazonaws.com/dev/api/getSoundUploadPresignedURL', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: userId, // 固定されたuserIdを使用
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setFileName(data.file_name);
+        setUploadUrl(data.upload_url);
+      } else {
+        Alert.alert('Error', data.message || 'Something went wrong');
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        Alert.alert('Error', error.message);
+      } else {
+        Alert.alert('Error', 'An unknown error occurred.');
+      }
     }
   };
 
@@ -92,21 +124,21 @@ const Gen: React.FC = () => {
   };
 
   const openMusicDownloader = () => {
-    setModalVisible(false); // Close MusicGenerator modal
-    setSecondModalVisible(true); // Open MusicDownloader modal
+    setModalVisible(false);
+    setSecondModalVisible(true);
   };
 
   const closeMusicDownloader = () => {
-    setSecondModalVisible(false); // Close MusicDownloader modal
+    setSecondModalVisible(false);
   };
 
   const openMusicReviewer = () => {
-    setModalVisible(false); // Close MusicGenerator modal
-    setThirdModalVisible(true); // Open MusicReviewer modal
+    setModalVisible(false);
+    setThirdModalVisible(true);
   };
 
   const closeMusicReviewer = () => {
-    setThirdModalVisible(false); // Close MusicReviewer modal
+    setThirdModalVisible(false);
   };
 
   return (
@@ -191,11 +223,11 @@ const Gen: React.FC = () => {
         </View>
       </Modal>
 
-      {/* Modal to show MusicDownloader */}
+      {/* Modal to show MusicReviewer */}
       <Modal
         animationType="slide"
         transparent={true}
-        visible={secondModalVisible}
+        visible={thirdModalVisible} // Change to thirdModalVisible
         onRequestClose={closeMusicReviewer}
       >
         <View style={styles.modalView}>
@@ -209,67 +241,67 @@ const Gen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
-    backgroundColor: "white",
-    paddingLeft: 48,
-    paddingRight: 22, 
+    padding: 20,
+    justifyContent: "center",
   },
   header: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    marginTop: 22
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
   },
   optionWrapper: {
-    marginTop: 22,
+    marginBottom: 20,
   },
   optionLabel: {
-    fontSize: 16,
-    marginBottom: 8,
+    fontSize: 18,
+    marginBottom: 10,
   },
   optionRow: {
     flexDirection: "row",
-    alignItems: "center",
   },
   optionItem: {
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 20,
+    padding: 10,
     borderWidth: 1,
-    borderColor: "#BBBBBB",
-    justifyContent: "center",
-    alignItems: "center",
+    borderColor: "#ccc",
+    borderRadius: 5,
     marginRight: 10,
   },
-  optionText: {
-    fontSize: 14,
-    color: "#999898",
-  },
   optionSelected: {
-    backgroundColor: "#FEB9FC",
-    color: "black",
+    backgroundColor: "#007BFF",
+  },
+  optionText: {
+    color: "#000",
   },
   button: {
-    backgroundColor: "#FF32C7",
     padding: 15,
-    borderRadius: 10,
-    marginTop: 30,
-    background: 'linear-gradient(242deg, #FF32C7 0%, #5642DD 100%)',
+    backgroundColor: "#007BFF",
+    borderRadius: 5,
+    alignItems: "center",
+    marginTop: 20,
   },
   buttonText: {
     color: "#fff",
-    fontSize: 18,
-    textAlign: 'center',
+    fontWeight: "bold",
   },
   recordingInfo: {
     marginTop: 20,
+    alignItems: "center",
   },
   modalView: {
     flex: 1,
-    justifyContent: "center",
+    backgroundColor: "white",
+    margin: 20,
+    borderRadius: 20,
+    padding: 35,
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
 });
 

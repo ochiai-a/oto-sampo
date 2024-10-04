@@ -28,7 +28,6 @@ const App = () => {
       if (response.ok) {
         setFileName(data.file_name);
         setUploadUrl(data.upload_url);
-        selectFile(); // ファイルを選択
       } else {
         Alert.alert('Error', data.message || 'Something went wrong');
       }
@@ -44,7 +43,7 @@ const App = () => {
   // 2. 音楽ファイルを選択する関数
   const selectFile = async () => {
     try {
-      const asset = Asset.fromModule(require('../../assets/music/NoisyStreet.mp3'));
+      const asset = Asset.fromModule(require('../../assets/music/夜の繁華街.mp3'));
       await asset.downloadAsync(); // アセットをダウンロード
       const localFilePath = asset.localUri || ''; // ローカルURIを取得
 
