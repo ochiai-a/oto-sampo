@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "flex-start",
-    alignItems: "flex-start",
+    // alignItems: "flex-start",
     paddingLeft: 22,
     paddingRight: 22,
   },
