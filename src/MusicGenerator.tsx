@@ -15,7 +15,7 @@ export default function MusicGenerater({
   userId,
 }: {
   closeModal: () => void;
-  openDownloader: () => void;
+  openDownloader: (stepFunctionResponse: any) => void; // 引数にstepFunctionResponseを追加
   recordingUri: string;
   fileName: string;
   uploadUrl: string;
@@ -56,35 +56,38 @@ export default function MusicGenerater({
     }
   };
 
-  // 4. StepFunctionのAPIを呼び出す関数
-  const callStepFunction = async () => {
-    try {
-      const response = await fetch('https://ihce7qjrhd.execute-api.ap-northeast-1.amazonaws.com/dev/api/generateMusic', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          user_id: userId, // 固定されたuserIdを使用
-          file_name: fileName,
-        }),
-      });
+// 4. StepFunctionのAPIを呼び出す関数
+const callStepFunction = async () => {
+  try {
+    const response = await fetch('https://ihce7qjrhd.execute-api.ap-northeast-1.amazonaws.com/dev/api/generateMusic', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user_id: userId, // 固定されたuserIdを使用
+        file_name: fileName,
+      }),
+    });
 
-      const data = await response.json();
+    const data = await response.json();
+    const { S3_file_name, user_id } = data;
+    // レスポンスデータを状態に設定
+    setStepFunctionResponse({ S3_file_name, user_id });
 
-      if (response.ok) {
-        setStepFunctionResponse({ user_id: userId, file_name: fileName }); // レスポンスを保存
-      } else {
-        Alert.alert('Error', data.message || 'Step Functionの実行中にエラーが発生しました');
-      }
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        Alert.alert('Error', error.message);
-      } else {
-        Alert.alert('Error', 'An unknown error occurred.');
-      }
+    if (response.ok) {
+      setStepFunctionResponse(data); // レスポンスデータを保存
+    } else {
+      Alert.alert('Error', data.message || 'Step Functionの実行中にエラーが発生しました');
     }
-  };
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      Alert.alert('Error', error.message);
+    } else {
+      Alert.alert('Error', 'An unknown error occurred.');
+    }
+  }
+};
 
   useEffect(() => {
     // コンポーネントがマウントされたときにアップロード機能を呼び出す
@@ -138,7 +141,7 @@ export default function MusicGenerater({
             {stepFunctionResponse && (
         <View style={{ marginTop: 20 }}>
           <Text style={styles.infoText}>User ID: {stepFunctionResponse.user_id}</Text>
-          <Text style={styles.infoText}>File Name: {stepFunctionResponse.file_name}</Text>
+          <Text style={styles.infoText}>File Name: {stepFunctionResponse.S3_file_name}</Text>
         </View>
       )}
     </SafeAreaView>

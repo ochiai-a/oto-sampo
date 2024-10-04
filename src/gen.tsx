@@ -17,6 +17,7 @@ const Gen: React.FC = () => {
   const [thirdModalVisible, setThirdModalVisible] = useState<boolean>(false);
   const [fileName, setFileName] = useState<string | null>(null); // Add state for file name
   const [uploadUrl, setUploadUrl] = useState<string | null>(null); // Add state for upload URL
+  const [S3_file_name, setS3FileName] = useState<string | null>(null); // Add state for upload URL
   const userId = "OTOtest"; // ここでユーザーIDを定義
 
   // Delete old recording file
@@ -229,7 +230,9 @@ const Gen: React.FC = () => {
         onRequestClose={closeMusicDownloader}
       >
         <View style={styles.modalView}>
-          <MusicDownloader closeModal={closeMusicDownloader} />
+          <MusicDownloader 
+            S3_file_name={S3_file_name}
+            closeModal={closeMusicDownloader} />
         </View>
       </Modal>
 
