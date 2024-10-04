@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Image } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Alert, TouchableOpacity } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Audio } from 'expo-av';
+import * as FileSystem from 'expo-file-system'; // FileSystemのインポート
+import { Asset } from 'expo-asset'; // Assetをインポート
 import FavoriteButton from '../components/FavoriteButton';
 
 export default function MusicGenerater({
@@ -10,15 +12,20 @@ export default function MusicGenerater({
   recordingUri,
   fileName,
   uploadUrl,
+  userId,
 }: {
   closeModal: () => void;
   openDownloader: () => void;
   recordingUri: string;
   fileName: string;
   uploadUrl: string;
+  userId: string;
 }) {
   const [sound, setSound] = useState<Audio.Sound | null>(null);
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [stepFunctionResponse, setStepFunctionResponse] = useState<any>(null); // ステータスを保存
+
+  const asset = Asset.fromModule(require('../assets/music/test.mp3'));
+  const fileUri = asset.uri; // アセットのURIを取得
 
   useEffect(() => {
     return sound
@@ -27,6 +34,65 @@ export default function MusicGenerater({
         }
       : undefined;
   }, [sound]);
+
+  // 3. 音楽ファイルをPresigned URLに送信する関数
+  const uploadFile = async () => {
+    if (!fileUri || !uploadUrl) {
+      Alert.alert("エラー", "アップロードするファイルがありません");
+      return;
+    }
+
+    try {
+      const response = await FileSystem.uploadAsync(uploadUrl, fileUri, {
+        headers: {
+          'Content-Type': 'audio/mpeg',
+        },
+        httpMethod: 'PUT',
+        uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
+      });
+
+      if (response.status === 200) {
+        Alert.alert("アップロード成功", "音声ファイルがアップロードされました");
+        callStepFunction(); // アップロード後にStepFunctionを呼び出す
+      } else {
+        Alert.alert("アップロード失敗", `ステータスコード: ${response.status}`);
+      }
+    } catch (error: any) {
+      Alert.alert("アップロードエラー", error.message);
+    }
+  };
+  
+    // 4. StepFunctionのAPIを呼び出す関数
+    const callStepFunction = async () => {
+      try {
+        const response = await fetch('https://ihce7qjrhd.execute-api.ap-northeast-1.amazonaws.com/dev/api/generateMusic', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            user_id: userId, // 固定されたuserIdを使用
+            file_name: fileName,
+          }),
+        });
+  
+        const data = await response.json();
+  
+        if (response.ok) {
+          Alert.alert("Step Function 実行", "Step Functionが正常に開始されました");
+          setStepFunctionResponse({ user_id: userId, file_name: fileName }); // レスポンスを保存
+        } else {
+          Alert.alert('Error', data.message || 'Step Functionの実行中にエラーが発生しました');
+        }
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          Alert.alert('Error', error.message);
+        } else {
+          Alert.alert('Error', 'An unknown error occurred.');
+        }
+      }
+    };
+
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -57,11 +123,19 @@ export default function MusicGenerater({
 
       <View style={styles.container}>
         {/* 受け取った値を表示 */}
-        <Text style={styles.musicTitle}>録音ファイル情報</Text>
+        {/* <Text style={styles.musicTitle}>録音ファイル情報</Text>
         <Text style={styles.infoText}>ファイル名: {fileName}</Text>
         <Text style={styles.infoText}>アップロードURL: {uploadUrl}</Text>
-        <Text style={styles.infoText}>録音URI: {recordingUri}</Text>
+        <Text style={styles.infoText}>録音URI: {recordingUri}</Text> */}
       </View>
+
+      {/* ステップファンクションのレスポンスを表示 */}
+            {stepFunctionResponse && (
+        <View style={{ marginTop: 20 }}>
+          <Text style={styles.infoText}>User ID: {stepFunctionResponse.user_id}</Text>
+          <Text style={styles.infoText}>File Name: {stepFunctionResponse.file_name}</Text>
+        </View>
+      )}
     </SafeAreaView>
   );
 }

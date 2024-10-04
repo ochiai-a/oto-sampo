@@ -216,6 +216,7 @@ const Gen: React.FC = () => {
             recordingUri={recordingUri}
             fileName={fileName} // Pass file name to MusicGenerater
             uploadUrl={uploadUrl} // Pass upload URL to MusicGenerater
+            userId = {userId}
             closeModal={openMusicDownloader} // Function to open MusicDownloader modal
           />
         </View>
