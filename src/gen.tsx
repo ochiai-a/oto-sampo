@@ -15,6 +15,7 @@ const Gen: React.FC = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);  // MusicGenerator modal
   const [secondModalVisible, setSecondModalVisible] = useState<boolean>(false); // MusicDownloader modal
   const [thirdModalVisible, setThirdModalVisible] = useState<boolean>(false); // MusicReviewer modal
+  const [recordingTimeout, setRecordingTimeout] = useState<NodeJS.Timeout | null>(null); // Timeout reference
 
   // Delete old recording file
   const deleteOldRecording = async () => {
@@ -44,6 +45,12 @@ const Gen: React.FC = () => {
       );
       setRecording(recording);
       setIsRecording(true);
+
+      // Set a timeout to stop recording after 30 seconds
+      const timeout = setTimeout(() => {
+        stopRecording();
+      }, 30000);
+      setRecordingTimeout(timeout); // Save the timeout reference
     } catch (error) {
       console.error("録音中にエラーが発生しました:", error);
     }
@@ -52,6 +59,9 @@ const Gen: React.FC = () => {
   // Stop recording and show modal
   const stopRecording = async () => {
     setModalVisible(true); // Open MusicGenerator modal
+    if (recordingTimeout) {
+      clearTimeout(recordingTimeout); // Clear the timeout if recording is stopped manually
+    }
     try {
       if (recording) {
         await recording.stopAndUnloadAsync();
@@ -78,8 +88,11 @@ const Gen: React.FC = () => {
       if (recording) {
         recording.stopAndUnloadAsync(); // Stop recording on component unmount
       }
+      if (recordingTimeout) {
+        clearTimeout(recordingTimeout); // Clear the timeout on unmount
+      }
     };
-  }, [recording]);
+  }, [recording, recordingTimeout]);
 
   const handleTempoSelect = (tempo: string) => {
     setSelectedTempo(tempo);
@@ -92,6 +105,7 @@ const Gen: React.FC = () => {
   };
 
   const openMusicDownloader = () => {
+    setIsRecording(false); // 録音状態をfalseに設定
     setModalVisible(false); // Close MusicGenerator modal
     setSecondModalVisible(true); // Open MusicDownloader modal
   };
@@ -115,15 +129,17 @@ const Gen: React.FC = () => {
         <View style={styles.optionWrapper}>
           <Text style={styles.optionLabel}>テンポ</Text>
           <View style={styles.optionRow}>
-            {["遅い", "普通", "早い"].map((tempo) => (
-              <TouchableOpacity
-                key={tempo}
-                style={[styles.optionItem, selectedTempo === tempo ? styles.optionSelected : null]}
-                onPress={() => handleTempoSelect(tempo)}
-              >
-                <Text style={styles.optionText}>{tempo}</Text>
-              </TouchableOpacity>
-            ))}
+          {["遅い", "普通", "早い"].map((tempo) => (
+            <TouchableOpacity
+              key={tempo}
+              style={[styles.optionItem, selectedTempo === tempo ? styles.optionSelected : null]}
+              onPress={() => handleTempoSelect(tempo)}
+            >
+              <Text style={[styles.optionText, selectedTempo === tempo && { color: "#222222" }]}>
+                {tempo}
+              </Text>
+            </TouchableOpacity>
+          ))}
           </View>
         </View>
 
@@ -136,11 +152,14 @@ const Gen: React.FC = () => {
                 style={[styles.optionItem, selectedInstruments.includes(instrument) ? styles.optionSelected : null]}
                 onPress={() => handleInstrumentSelect(instrument)}
               >
-                <Text style={styles.optionText}>{instrument}</Text>
+                <Text style={[styles.optionText, selectedInstruments.includes(instrument) && { color: "#222222" }]}>
+                  {instrument}
+                </Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
         </View>
+
 
         {/* Recording Button */}
         <View style={styles.imageWrapper}>
@@ -231,7 +250,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "flex-start",
-    // alignItems: "flex-start",
     paddingLeft: 22,
     paddingRight: 22,
   },
@@ -268,6 +286,7 @@ const styles = StyleSheet.create({
   optionSelected: {
     backgroundColor: "#FEB9FC",
     color: "black",
+    borderColor: "#FEB9FC", // Set border color to #222222 when selected
   },
   recordingInfo: {
     marginTop: 20,

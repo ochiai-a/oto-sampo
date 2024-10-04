@@ -99,6 +99,7 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: "cover", // Cover the entire screen
     width: '100%',
+    paddingTop: 45
   },
   safeArea: {
     flex: 1,
