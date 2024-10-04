@@ -23,29 +23,9 @@ export default function MusicGenerater({
 }) {
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [stepFunctionResponse, setStepFunctionResponse] = useState<any>(null); // ステータスを保存
-
-  const [fileUri, setFileUri] = useState<string | null>(null);
-
-  // 2. 音楽ファイルを選択する関数
-  const selectFile = async () => {
-    try {
-      const asset = Asset.fromModule(require('../assets/music/test.mp3'));
-      await asset.downloadAsync(); // アセットをダウンロード
-      const localFilePath = asset.localUri || ''; // ローカルURIを取得
-
-      const fileInfo = await FileSystem.getInfoAsync(localFilePath);
-      if (fileInfo.exists) {
-        setFileUri(localFilePath);
-        setTimeout(() => {
-        }, 3000); // 3000ミリ秒 = 3秒
-        uploadFile(); // ファイルをアップロードする
-      } else {
-        Alert.alert("エラー", "指定されたファイルが見つかりません");
-      }
-    } catch (error) {
-      Alert.alert("エラー", "ファイルの選択中にエラーが発生しました");
-    }
-  };
+  const asset = Asset.fromModule(require('../assets/music/test.mp3'));
+  const fileUri = asset.localUri || ''; // ローカルURIを取得
+ 
 
   // 3. 音楽ファイルをPresigned URLに送信する関数
   const uploadFile = async () => {
@@ -67,7 +47,6 @@ export default function MusicGenerater({
       });
 
       if (response.status === 200) {
-        Alert.alert("アップロード成功", "音声ファイルがアップロードされました");
         callStepFunction(); // アップロード後にStepFunctionを呼び出す
       } else {
         Alert.alert("アップロード失敗", `ステータスコード: ${response.status}`);
@@ -94,7 +73,6 @@ export default function MusicGenerater({
       const data = await response.json();
 
       if (response.ok) {
-        Alert.alert("Step Function 実行", "Step Functionが正常に開始されました");
         setStepFunctionResponse({ user_id: userId, file_name: fileName }); // レスポンスを保存
       } else {
         Alert.alert('Error', data.message || 'Step Functionの実行中にエラーが発生しました');
@@ -110,8 +88,9 @@ export default function MusicGenerater({
 
   useEffect(() => {
     // コンポーネントがマウントされたときにアップロード機能を呼び出す
-    selectFile();
-
+    setTimeout(() => {
+      uploadFile();
+    }, 3000); // 3000ミリ秒 = 3
     return sound
       ? () => {
           sound.unloadAsync();
@@ -149,8 +128,8 @@ export default function MusicGenerater({
       <View style={styles.container}>
         {/* 受け取った値を表示 */}
         {/* <Text style={styles.musicTitle}>録音ファイル情報</Text> */}
-        <Text style={styles.infoText}>ファイル名: {fileName}</Text>
-        <Text style={styles.infoText}>ファイルURL: {fileUri}</Text> 
+        {/* <Text style={styles.infoText}>ファイル名: {fileName}</Text>
+        <Text style={styles.infoText}>ファイルURL: {fileUri}</Text>  */}
         {/* <Text style={styles.infoText}>アップロードURL: {uploadUrl}</Text> */}
         {/* <Text style={styles.infoText}>録音URI: {recordingUri}</Text> */}
       </View>
