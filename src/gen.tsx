@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Modal, ImageBackground, Image } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Modal, ImageBackground, Image, Alert } from "react-native";
 import { Audio } from "expo-av";
 import * as FileSystem from "expo-file-system";
 import MusicGenerater from "./MusicGenerator";  // Import the MusicGenerater component
@@ -16,6 +16,10 @@ const Gen: React.FC = () => {
   const [secondModalVisible, setSecondModalVisible] = useState<boolean>(false); // MusicDownloader modal
   const [thirdModalVisible, setThirdModalVisible] = useState<boolean>(false); // MusicReviewer modal
   const [recordingTimeout, setRecordingTimeout] = useState<NodeJS.Timeout | null>(null); // Timeout reference
+  const [fileName, setFileName] = useState<string | null>(null); // Add state for file name
+  const [uploadUrl, setUploadUrl] = useState<string | null>(null); // Add state for upload URL
+  const [S3_file_name, setS3FileName] = useState<string | null>(null); // Add state for upload URL
+  const userId = "OTOtest"; // ここでユーザーIDを定義
 
   // Delete old recording file
   const deleteOldRecording = async () => {
@@ -33,13 +37,11 @@ const Gen: React.FC = () => {
   const startRecording = async () => {
     try {
       await deleteOldRecording();
-
       const { status } = await Audio.requestPermissionsAsync();
       if (status !== "granted") {
         console.error("録音の権限がありません");
         return;
       }
-
       const { recording } = await Audio.Recording.createAsync(
         Audio.RecordingOptionsPresets.HIGH_QUALITY
       );
@@ -75,11 +77,42 @@ const Gen: React.FC = () => {
           });
           console.log("録音ファイルの新しい URI:", newUri);
           setRecordingUri(newUri);
+          await getPresignedURL(); // Call getPresignedURL here
         }
         setRecording(null);
       }
     } catch (error) {
       console.error("録音停止中にエラーが発生しました:", error);
+    }
+  };
+
+  // 1. Presigned URLを取得する関数
+  const getPresignedURL = async () => {
+    try {
+      const response = await fetch('https://ihce7qjrhd.execute-api.ap-northeast-1.amazonaws.com/dev/api/getSoundUploadPresignedURL', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: userId, // 固定されたuserIdを使用
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setFileName(data.file_name);
+        setUploadUrl(data.upload_url);
+      } else {
+        Alert.alert('Error', data.message || 'Something went wrong');
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        Alert.alert('Error', error.message);
+      } else {
+        Alert.alert('Error', 'An unknown error occurred.');
+      }
     }
   };
 
@@ -120,7 +153,7 @@ const Gen: React.FC = () => {
   };
 
   return (
-    <ImageBackground 
+    <ImageBackground
       source={require('../assets/images/gen-main.png')} // Background image path
       style={styles.background}
     >
@@ -129,20 +162,19 @@ const Gen: React.FC = () => {
         <View style={styles.optionWrapper}>
           <Text style={styles.optionLabel}>テンポ</Text>
           <View style={styles.optionRow}>
-          {["遅い", "普通", "早い"].map((tempo) => (
-            <TouchableOpacity
-              key={tempo}
-              style={[styles.optionItem, selectedTempo === tempo ? styles.optionSelected : null]}
-              onPress={() => handleTempoSelect(tempo)}
-            >
-              <Text style={[styles.optionText, selectedTempo === tempo && { color: "#222222" }]}>
-                {tempo}
-              </Text>
-            </TouchableOpacity>
-          ))}
+            {["遅い", "普通", "早い"].map((tempo) => (
+              <TouchableOpacity
+                key={tempo}
+                style={[styles.optionItem, selectedTempo === tempo ? styles.optionSelected : null]}
+                onPress={() => handleTempoSelect(tempo)}
+              >
+                <Text style={[styles.optionText, selectedTempo === tempo && { color: "#222222" }]}>
+                  {tempo}
+                </Text>
+              </TouchableOpacity>
+            ))}
           </View>
         </View>
-
         <View style={styles.optionWrapper}>
           <Text style={styles.optionLabel}>楽器</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -159,7 +191,6 @@ const Gen: React.FC = () => {
             ))}
           </ScrollView>
         </View>
-
 
         {/* Recording Button */}
         <View style={styles.imageWrapper}>
@@ -181,6 +212,14 @@ const Gen: React.FC = () => {
           </View>
         )}
 
+        {/* Display file name and upload URL */}
+        {fileName && uploadUrl && (
+          <View style={styles.recordingInfo}>
+            <Text>ファイル名: {fileName}</Text>
+            <Text>アップロードURL: {uploadUrl}</Text>
+          </View>
+        )}
+
         {/* Modal to show MusicGenerater */}
         <Modal
           animationType="slide"
@@ -192,7 +231,7 @@ const Gen: React.FC = () => {
         >
           <View style={styles.modalView}>
             <MusicGenerater
-              selectedTempo={selectedTempo}
+              // selectedTempo={selectedTempo}
               selectedInstruments={selectedInstruments}
               recordingUri={recordingUri}
               closeModal={openMusicDownloader} // Function to open MusicDownloader modal
