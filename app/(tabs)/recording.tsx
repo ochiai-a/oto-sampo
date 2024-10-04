@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, ImageBackground } from "react-native";
 import { Audio } from "expo-av";
 import * as FileSystem from "expo-file-system";
 import Gen from '../../src/gen'
@@ -77,12 +77,17 @@ export default function recording() {
   }, [recording]);
 
   return (
+    <ImageBackground 
+    source={require('../../assets/images/gen-main.png')} // Replace with your image path
+    style={styles.background}
+  >
     <View style={styles.container}>
       <View style={styles.titleContainer}>
         <Title />
       </View>
       <Gen />
     </View>
+    </ImageBackground>
   );
 }
 
@@ -91,7 +96,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f5f5f5",
+    // backgroundColor: "#f5f5f5",
   },
   title: {
     fontSize: 24,

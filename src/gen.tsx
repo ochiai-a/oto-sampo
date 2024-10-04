@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Modal } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Modal, ImageBackground } from "react-native";
 import { Audio } from "expo-av";
 import * as FileSystem from "expo-file-system";
 import MusicGenerater from "./MusicGenerator";  // Import the MusicGenerater component
@@ -106,6 +106,10 @@ const Gen: React.FC = () => {
   };
 
   return (
+    <ImageBackground 
+    source={require('../assets/images/gen-main.png')} // Replace with your image path
+    style={styles.background}
+  >
     <View style={styles.container}>
       <Text style={styles.header}>どんな音を作りますか？</Text>
       <View style={styles.optionWrapper}>
@@ -199,16 +203,22 @@ const Gen: React.FC = () => {
         </View>
       </Modal>
     </View>
+  </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    resizeMode: "cover", // Cover the entire screen
+    width:'100%'
+  },
   container: {
     flex: 1,
     justifyContent: "flex-start",
     alignItems: "flex-start",
-    backgroundColor: "white",
-    paddingLeft: 48,
+    // backgroundColor: "white",
+    paddingLeft: 22,
     paddingRight: 22, 
   },
   header: {

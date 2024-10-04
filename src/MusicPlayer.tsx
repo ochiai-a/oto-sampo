@@ -20,7 +20,7 @@ export default function MusicPlayer({ closeModal, playSound, stopSound, isPlayin
         <TouchableOpacity onPress={openMusicDownloader}>
           <View style={styles.circleContainer}>
             <View style={styles.outerCircle} />
-            <View style={styles.middleCircle} />
+            <Image style={{ width: 230, height: 230 }} source={require('../assets/images/BigCircle.png')} />
             <View style={styles.innerCircle} />
           </View>
         </TouchableOpacity>
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     height: 210,
     borderRadius: 105,
     borderWidth: 1,
-    borderColor: '#555555',
+    borderColor: '#999999',
     position: 'absolute',
   },
   titleWrapper: {

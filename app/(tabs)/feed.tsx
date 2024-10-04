@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Modal, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 import MusicPlayer from '../../src/MusicPlayer';
 import Explorer from '../../src/explorer';
@@ -8,31 +8,36 @@ import { Audio } from 'expo-av';
 
 export default function App() {
   const [modalVisible, setModalVisible] = useState(false);
-  const soundRef = useRef<Audio.Sound | null>(null); // Ref to store the sound object
-  const [isPlaying, setIsPlaying] = useState(false); // State to track if audio is playing
+  const [sound, setSound] = useState<Audio.Sound | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
+  useEffect(() => {
+    return sound
+      ? () => {
+          sound.unloadAsync(); // Unload sound when component unmounts
+        }
+      : undefined;
+  }, [sound]);
+
+  // Function to play audio
   async function playSound() {
-    if (soundRef.current) {
-      await soundRef.current.stopAsync();
+    if (sound) {
+      await sound.stopAsync(); // Stop previous sound if playing
     }
-    
-    const { sound } = await Audio.Sound.createAsync(
-      require('../assets/music/mondo_01.mp3'), // Adjust path as necessary
-      {
-        shouldPlay: true,
-        staysActiveInBackground: true, // Ensures sound plays even in background
-        playsInSilentModeIOS: true,    // Ensures sound plays in silent mode on iOS
-      }
+    const { sound: newSound } = await Audio.Sound.createAsync(
+      require('../../assets/music/mondo_01.mp3') // Replace with the path to your music file
     );
-    
-    soundRef.current = sound;
+    setSound(newSound);
     setIsPlaying(true);
-    await sound.playAsync();
+    await newSound.playAsync();
   }
 
+  // Function to stop audio
   async function stopSound() {
-    if (soundRef.current) {
-      await soundRef.current.stopAsync();
+    if (sound) {
+      await sound.stopAsync();
+      await sound.unloadAsync(); // Unload the sound to free resources
+      setSound(null);
       setIsPlaying(false);
     }
   }
@@ -44,7 +49,6 @@ export default function App() {
           <Title />
         </View>
         <Explorer />
-        
         {/* Player component used as a modal button, fixed at the bottom */}
         <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.playerContainer}>
           <Player />
@@ -58,11 +62,11 @@ export default function App() {
           onRequestClose={() => setModalVisible(false)}
         >
           <View style={styles.modalView}>
-            {/* Pass control functions to MusicPlayer */}
-            <MusicPlayer 
-              closeModal={() => setModalVisible(false)} 
-              playSound={playSound} 
-              stopSound={stopSound} 
+            {/* Pass control functions and state to MusicPlayer */}
+            <MusicPlayer
+              closeModal={() => setModalVisible(false)}
+              playSound={playSound}
+              stopSound={stopSound}
               isPlaying={isPlaying}
             />
           </View>
@@ -87,7 +91,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: '#fff', // Customize this as per your need
+    backgroundColor: '#fff',
     borderTopWidth: 1,
     borderTopColor: '#ccc',
   },
