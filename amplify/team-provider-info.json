@@ -1,0 +1,32 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-otosampo-dev-e4da3-authRole",
+      "UnauthRoleArn": "arn:aws:iam::654654257411:role/amplify-otosampo-dev-e4da3-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::654654257411:role/amplify-otosampo-dev-e4da3-authRole",
+      "Region": "ap-northeast-1",
+      "DeploymentBucketName": "amplify-otosampo-dev-e4da3-deployment",
+      "UnauthRoleName": "amplify-otosampo-dev-e4da3-unauthRole",
+      "StackName": "amplify-otosampo-dev-e4da3",
+      "StackId": "arn:aws:cloudformation:ap-northeast-1:654654257411:stack/amplify-otosampo-dev-e4da3/27fe0790-70d1-11ef-8024-0e69858c7691",
+      "AmplifyAppId": "divkkp9ge438l"
+    },
+    "categories": {
+      "auth": {
+        "otosampo40678b34": {}
+      },
+      "function": {
+        "otosanpoAPIAuth": {
+          "deploymentBucketName": "amplify-otosampo-dev-e4da3-deployment",
+          "s3Key": "amplify-builds/otosanpoAPIAuth-6e695a7a4b7838633232-build.zip"
+        }
+      },
+      "hosting": {
+        "S3AndCloudFront": {}
+      },
+      "api": {
+        "otosanpoAPI": {}
+      }
+    }
+  }
+}
