@@ -4,7 +4,19 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Audio } from 'expo-av';
 import FavoriteButton from '../components/FavoriteButton';
 
-export default function MusicGenerater({ closeModal, openDownloader }: { closeModal: () => void; openDownloader: () => void }) {
+export default function MusicGenerater({
+  closeModal,
+  openDownloader,
+  recordingUri,
+  fileName,
+  uploadUrl,
+}: {
+  closeModal: () => void;
+  openDownloader: () => void;
+  recordingUri: string;
+  fileName: string;
+  uploadUrl: string;
+}) {
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
@@ -41,6 +53,14 @@ export default function MusicGenerater({ closeModal, openDownloader }: { closeMo
           <Text style={styles.musicTitle}>あなたの音を作っています</Text>
           <Text style={styles.rating}>しばらくお待ちください</Text>
         </View>
+      </View>
+
+      <View style={styles.container}>
+        {/* 受け取った値を表示 */}
+        <Text style={styles.musicTitle}>録音ファイル情報</Text>
+        <Text style={styles.infoText}>ファイル名: {fileName}</Text>
+        <Text style={styles.infoText}>アップロードURL: {uploadUrl}</Text>
+        <Text style={styles.infoText}>録音URI: {recordingUri}</Text>
       </View>
     </SafeAreaView>
   );
@@ -124,5 +144,11 @@ const styles = StyleSheet.create({
   musicButton: {
     paddingHorizontal: 20,
     justifyContent: 'center',
+  },
+  infoText: {
+    color: 'white',
+    fontSize: 16,
+    marginVertical: 5,
+    textAlign: 'center',
   },
 });

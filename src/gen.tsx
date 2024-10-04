@@ -159,7 +159,7 @@ const Gen: React.FC = () => {
         </View>
       </View>
 
-      <View style={styles.optionWrapper}>
+      {/* <View style={styles.optionWrapper}>
         <Text style={styles.optionLabel}>楽器</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {["ピアノ", "ストリング", "バイオリン", "ベース", "ギター", "ドラム"].map((instrument) => (
@@ -172,7 +172,7 @@ const Gen: React.FC = () => {
             </TouchableOpacity>
           ))}
         </ScrollView>
-      </View>
+      </View> */}
 
       {/* Recording Button */}
       {isRecording ? (
@@ -192,6 +192,14 @@ const Gen: React.FC = () => {
         </View>
       )}
 
+      {/* Display file name and upload URL */}
+            {fileName && uploadUrl && (
+        <View style={styles.recordingInfo}>
+          <Text>ファイル名: {fileName}</Text>
+          <Text>アップロードURL: {uploadUrl}</Text>
+        </View>
+      )}
+
       {/* Modal to show MusicGenerater */}
       <Modal
         animationType="slide"
@@ -206,11 +214,12 @@ const Gen: React.FC = () => {
             selectedTempo={selectedTempo}
             selectedInstruments={selectedInstruments}
             recordingUri={recordingUri}
+            fileName={fileName} // Pass file name to MusicGenerater
+            uploadUrl={uploadUrl} // Pass upload URL to MusicGenerater
             closeModal={openMusicDownloader} // Function to open MusicDownloader modal
           />
         </View>
       </Modal>
-
       {/* Modal to show MusicDownloader */}
       <Modal
         animationType="slide"
@@ -241,67 +250,66 @@ const Gen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    justifyContent: "center",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    backgroundColor: "white",
+    paddingLeft: 48,
+    paddingRight: 22, 
   },
   header: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    marginTop: 22
   },
   optionWrapper: {
-    marginBottom: 20,
+    marginTop: 22,
   },
   optionLabel: {
-    fontSize: 18,
-    marginBottom: 10,
+    fontSize: 16,
+    marginBottom: 8,
   },
   optionRow: {
     flexDirection: "row",
+    alignItems: "center",
   },
   optionItem: {
-    padding: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 20,
     borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
+    borderColor: "#BBBBBB",
+    justifyContent: "center",
+    alignItems: "center",
     marginRight: 10,
   },
-  optionSelected: {
-    backgroundColor: "#007BFF",
-  },
   optionText: {
-    color: "#000",
+    fontSize: 14,
+    color: "#999898",
+  },
+  optionSelected: {
+    backgroundColor: "#FEB9FC",
+    color: "black",
   },
   button: {
+    backgroundColor: "#FF32C7",
     padding: 15,
-    backgroundColor: "#007BFF",
-    borderRadius: 5,
-    alignItems: "center",
-    marginTop: 20,
+    borderRadius: 10,
+    marginTop: 30,
   },
   buttonText: {
     color: "#fff",
-    fontWeight: "bold",
+    fontSize: 18,
+    textAlign: 'center',
   },
   recordingInfo: {
     marginTop: 20,
-    alignItems: "center",
   },
   modalView: {
     flex: 1,
-    backgroundColor: "white",
-    margin: 20,
-    borderRadius: 20,
-    padding: 35,
+    justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
 });
 
