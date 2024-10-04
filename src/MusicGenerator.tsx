@@ -26,17 +26,6 @@ export default function MusicGenerater({
 
   const [fileUri, setFileUri] = useState<string | null>(null);
 
-  useEffect(() => {
-    // コンポーネントがマウントされたときにアップロード機能を呼び出す
-    uploadFile();
-
-    return sound
-      ? () => {
-          sound.unloadAsync();
-        }
-      : undefined;
-  }, [sound]);
-
   // 2. 音楽ファイルを選択する関数
   const selectFile = async () => {
     try {
@@ -47,6 +36,8 @@ export default function MusicGenerater({
       const fileInfo = await FileSystem.getInfoAsync(localFilePath);
       if (fileInfo.exists) {
         setFileUri(localFilePath);
+        setTimeout(() => {
+        }, 3000); // 3000ミリ秒 = 3秒
         uploadFile(); // ファイルをアップロードする
       } else {
         Alert.alert("エラー", "指定されたファイルが見つかりません");
@@ -59,7 +50,10 @@ export default function MusicGenerater({
   // 3. 音楽ファイルをPresigned URLに送信する関数
   const uploadFile = async () => {
     if (!fileUri || !uploadUrl) {
-      Alert.alert("エラー", "アップロードするファイルまたはURLを選択してください");
+      Alert.alert(
+        "エラー", 
+        `アップロードするファイルまたはURLを選択してください。\n\nfileUri: ${fileUri || 'なし'}\nuploadUrl: ${uploadUrl || 'なし'}`
+      );
       return;
     }
 
@@ -114,6 +108,16 @@ export default function MusicGenerater({
     }
   };
 
+  useEffect(() => {
+    // コンポーネントがマウントされたときにアップロード機能を呼び出す
+    selectFile();
+
+    return sound
+      ? () => {
+          sound.unloadAsync();
+        }
+      : undefined;
+  }, [sound]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
