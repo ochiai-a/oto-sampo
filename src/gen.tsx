@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Modal, ImageBackground } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Modal, ImageBackground, Image } from "react-native";
 import { Audio } from "expo-av";
 import * as FileSystem from "expo-file-system";
 import MusicGenerater from "./MusicGenerator";  // Import the MusicGenerater component
@@ -107,103 +107,103 @@ const Gen: React.FC = () => {
 
   return (
     <ImageBackground 
-    source={require('../assets/images/gen-main.png')} // Replace with your image path
-    style={styles.background}
-  >
-    <View style={styles.container}>
-      <Text style={styles.header}>どんな音を作りますか？</Text>
-      <View style={styles.optionWrapper}>
-        <Text style={styles.optionLabel}>テンポ</Text>
-        <View style={styles.optionRow}>
-          {["遅い", "普通", "早い"].map((tempo) => (
-            <TouchableOpacity
-              key={tempo}
-              style={[styles.optionItem, selectedTempo === tempo ? styles.optionSelected : null]}
-              onPress={() => handleTempoSelect(tempo)}
-            >
-              <Text style={styles.optionText}>{tempo}</Text>
+      source={require('../assets/images/gen-main.png')} // Background image path
+      style={styles.background}
+    >
+      <View style={styles.container}>
+        <Text style={styles.header}>どんな音を作りますか？</Text>
+        <View style={styles.optionWrapper}>
+          <Text style={styles.optionLabel}>テンポ</Text>
+          <View style={styles.optionRow}>
+            {["遅い", "普通", "早い"].map((tempo) => (
+              <TouchableOpacity
+                key={tempo}
+                style={[styles.optionItem, selectedTempo === tempo ? styles.optionSelected : null]}
+                onPress={() => handleTempoSelect(tempo)}
+              >
+                <Text style={styles.optionText}>{tempo}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
+        <View style={styles.optionWrapper}>
+          <Text style={styles.optionLabel}>楽器</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {["ピアノ", "ストリング", "バイオリン", "ベース", "ギター", "ドラム"].map((instrument) => (
+              <TouchableOpacity
+                key={instrument}
+                style={[styles.optionItem, selectedInstruments.includes(instrument) ? styles.optionSelected : null]}
+                onPress={() => handleInstrumentSelect(instrument)}
+              >
+                <Text style={styles.optionText}>{instrument}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* Recording Button */}
+        <View style={styles.imageWrapper}>
+          {isRecording ? (
+            <TouchableOpacity style={styles.image} onPress={stopRecording}>
+              <Image source={require('../assets/images/startGen2.png')} style={styles.imageContent} />
             </TouchableOpacity>
-          ))}
-        </View>
-      </View>
-
-      <View style={styles.optionWrapper}>
-        <Text style={styles.optionLabel}>楽器</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {["ピアノ", "ストリング", "バイオリン", "ベース", "ギター", "ドラム"].map((instrument) => (
-            <TouchableOpacity
-              key={instrument}
-              style={[styles.optionItem, selectedInstruments.includes(instrument) ? styles.optionSelected : null]}
-              onPress={() => handleInstrumentSelect(instrument)}
-            >
-              <Text style={styles.optionText}>{instrument}</Text>
+          ) : (
+            <TouchableOpacity style={styles.image} onPress={startRecording}>
+              <Image source={require('../assets/images/startGen.png')} style={styles.imageContent} />
             </TouchableOpacity>
-          ))}
-        </ScrollView>
+          )}
+        </View>
+
+        {recordingUri && (
+          <View style={styles.recordingInfo}>
+            <Text>録音完了!</Text>
+            <Text>録音ファイル: {recordingUri}</Text>
+          </View>
+        )}
+
+        {/* Modal to show MusicGenerater */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(false);
+          }}
+        >
+          <View style={styles.modalView}>
+            <MusicGenerater
+              selectedTempo={selectedTempo}
+              selectedInstruments={selectedInstruments}
+              recordingUri={recordingUri}
+              closeModal={openMusicDownloader} // Function to open MusicDownloader modal
+            />
+          </View>
+        </Modal>
+
+        {/* Modal to show MusicDownloader */}
+        <Modal
+          transparent={true}
+          visible={secondModalVisible}
+          onRequestClose={closeMusicDownloader}
+        >
+          <View style={styles.modalView}>
+            <MusicDownloader closeModal={closeMusicDownloader} />
+          </View>
+        </Modal>
+
+        {/* Modal to show MusicReviewer */}
+        <Modal
+          transparent={true}
+          visible={thirdModalVisible} // Use thirdModalVisible for MusicReviewer
+          onRequestClose={closeMusicReviewer}
+        >
+          <View style={styles.modalView}>
+            <MusicReviewer closeModal={closeMusicReviewer} />
+          </View>
+        </Modal>
       </View>
-
-      {/* Recording Button */}
-      {isRecording ? (
-        <TouchableOpacity style={styles.button} onPress={stopRecording}>
-          <Text style={styles.buttonText}>録音停止</Text>
-        </TouchableOpacity>
-      ) : (
-        <TouchableOpacity style={styles.button} onPress={startRecording}>
-          <Text style={styles.buttonText}>録音開始</Text>
-        </TouchableOpacity>
-      )}
-
-      {recordingUri && (
-        <View style={styles.recordingInfo}>
-          <Text>録音完了!</Text>
-          <Text>録音ファイル: {recordingUri}</Text>
-        </View>
-      )}
-
-      {/* Modal to show MusicGenerater */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(false);
-        }}
-      >
-        <View style={styles.modalView}>
-          <MusicGenerater
-            selectedTempo={selectedTempo}
-            selectedInstruments={selectedInstruments}
-            recordingUri={recordingUri}
-            closeModal={openMusicDownloader} // Function to open MusicDownloader modal
-          />
-        </View>
-      </Modal>
-
-      {/* Modal to show MusicDownloader */}
-      <Modal
-        // animationType="slide"
-        transparent={true}
-        visible={secondModalVisible}
-        onRequestClose={closeMusicDownloader}
-      >
-        <View style={styles.modalView}>
-          <MusicDownloader closeModal={closeMusicDownloader} />
-        </View>
-      </Modal>
-
-      {/* Modal to show MusicReviewer */}
-      <Modal
-        // animationType="slide"
-        transparent={true}
-        visible={thirdModalVisible} // Use thirdModalVisible for MusicReviewer
-        onRequestClose={closeMusicReviewer}
-      >
-        <View style={styles.modalView}>
-          <MusicReviewer closeModal={closeMusicReviewer} />
-        </View>
-      </Modal>
-    </View>
-  </ImageBackground>
+    </ImageBackground>
   );
 };
 
@@ -211,20 +211,34 @@ const styles = StyleSheet.create({
   background: {
     flex: 1,
     resizeMode: "cover", // Cover the entire screen
-    width:'100%'
+    width: '100%',
+  },
+  imageWrapper: {
+    flex: 1, // Use flex to center the button vertically
+    justifyContent: 'center', // Center vertically
+    alignItems: 'center', // Center horizontally
+    marginTop: 100, // Adjust margin as needed
+  },
+  image: {
+    width: 220,
+    height: 60,
+  },
+  imageContent: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain', // Ensure the image is scaled appropriately
   },
   container: {
     flex: 1,
     justifyContent: "flex-start",
     alignItems: "flex-start",
-    // backgroundColor: "white",
     paddingLeft: 22,
-    paddingRight: 22, 
+    paddingRight: 22,
   },
   header: {
     fontSize: 28,
     fontWeight: 'bold',
-    marginTop: 22
+    marginTop: 22,
   },
   optionWrapper: {
     marginTop: 22,
@@ -255,26 +269,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#FEB9FC",
     color: "black",
   },
-  button: {
-    backgroundColor: "#FF32C7",
-    padding: 15,
-    borderRadius: 10,
-    marginTop: 30,
-    background: 'linear-gradient(242deg, #FF32C7 0%, #5642DD 100%)',
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 18,
-    textAlign: 'center',
-  },
   recordingInfo: {
     marginTop: 20,
+    padding: 10,
+    borderRadius: 5,
+    backgroundColor: "#E1F7D5",
   },
   modalView: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Dim background
   },
 });
 

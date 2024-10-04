@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ImageBackground, Image } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Audio } from 'expo-av';
 
@@ -16,6 +16,10 @@ export default function MusicGenerater({ closeModal }: { closeModal: () => void 
   }, [sound]);
 
   return (
+    <ImageBackground 
+    source={require('../assets/images/gen-rec.png')} // Background image path
+    style={styles.background}
+  >
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
         <TouchableOpacity style={styles.favoriteButton} onPress={closeModal}>
@@ -23,14 +27,14 @@ export default function MusicGenerater({ closeModal }: { closeModal: () => void 
         </TouchableOpacity>
         <Text style={styles.headerText}>NOW GENERATING</Text>
         <TouchableOpacity style={styles.favoriteButton}>
-          <Text>♡</Text>
+          <Text style={styles.headerText}>♡</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.container}>
         <View style={styles.circleContainer}>
           <View style={styles.outerCircle} />
-          <View style={styles.middleCircle} />
+          <Image style={{ width: 240, height: 240 }} source={require('../assets/images/BigCircle.png')} />
           <View style={styles.innerCircle} />
         </View>
       </View>
@@ -42,13 +46,19 @@ export default function MusicGenerater({ closeModal }: { closeModal: () => void 
         </View>
       </View>
     </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    resizeMode: "cover", // Cover the entire screen
+    width: '100%',
+  },
   safeArea: {
     flex: 1,
-    backgroundColor: '#222',
+    // backgroundColor: '#222',
     width: '100%',
   },
   header: {
@@ -63,7 +73,9 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
   },
-  favoriteButton: {},
+  favoriteButton: {
+    color: 'white',
+  },
   container: {
     paddingTop: 100,
     flex: 1,  // Added to make the container take full height
@@ -77,12 +89,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',       // Centers the circles horizontally
   },
   outerCircle: {
-    width: 240,
-    height: 240,
+    width: 245,
+    height: 245,
     backgroundColor: 'rgba(255, 222, 245, 0.08)',
     borderRadius: 120,
-    borderWidth: 0.91,
-    borderColor: 'white',
+    borderWidth: 5,
+    borderColor: '#FFB5FC',
     position: 'absolute',  // Layer this circle on top
   },
   middleCircle: {
