@@ -31,11 +31,13 @@ export default function MusicGenerater({
 }) {
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [stepFunctionResponse, setStepFunctionResponse] = useState<any>(null); // ステータスを保存
+  const asset = Asset.fromModule(require('../assets/music/test.mp3'));
 
   // 3. 音楽ファイルをPresigned URLに送信する関数
   const uploadFile = async () => {
-    const asset = Asset.fromModule(require('../assets/music/test.mp3'));
-    const fileUri = asset.uri || ''; // ローカルURIを取得
+    await asset.downloadAsync();  // これでアセットがロードされるのを待つ
+
+    const fileUri = asset.localUri || ''; // ローカルURIを取得
     console.log("次画面 保存ファイル名：",fileName,
       "\n S3保存先:", uploadUrl,
       "\n ユーザーID:", userId, 
@@ -91,11 +93,12 @@ export default function MusicGenerater({
       const data = await response.json();
       const { S3_file_name, user_id } = data;
       // レスポンスデータを状態に設定
-      setStepFunctionResponse({ S3_file_name, user_id });
+      setStepFunctionResponse({data});
 
-      console.log("ステップファンクション結果",stepFunctionResponse)
       if (response.ok) {
         setStepFunctionResponse(data); // レスポンスデータを保存
+        console.log("ステップファンクション結果",data.user_id, data.S3_file_name)
+        openDownloader(data);
       } else {
         Alert.alert(
           "Error",

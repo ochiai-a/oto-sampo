@@ -37,7 +37,6 @@ const Gen: React.FC = () => {
   const startRecording = async () => {
     try {
       await getPresignedURL(); // Call getPresignedURL here
-      console.log("URL",fileName, uploadUrl)
 
       await deleteOldRecording();
       const { status } = await Audio.requestPermissionsAsync();
@@ -54,7 +53,7 @@ const Gen: React.FC = () => {
       // Set a timeout to stop recording after 30 seconds
       const timeout = setTimeout(() => {
         stopRecording();
-      }, 30000);
+      }, 10000);
       setRecordingTimeout(timeout); // Save the timeout reference
     } catch (error) {
       console.error("録音中にエラーが発生しました:", error);
@@ -63,6 +62,7 @@ const Gen: React.FC = () => {
 
   // Stop recording and show modal
   const stopRecording = async () => {
+    console.log("URL",fileName, uploadUrl)
     setModalVisible(true); // Open MusicGenerator modal
     if (recordingTimeout) {
       clearTimeout(recordingTimeout); // Clear the timeout if recording is stopped manually
