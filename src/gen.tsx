@@ -139,7 +139,9 @@ const Gen: React.FC = () => {
     );
   };
 
-  const openMusicDownloader = () => {
+  const openMusicDownloader = (S3_file_name: string) => {
+    console.log("受け取ったS3ファイル名:", S3_file_name);
+    setS3FileName(S3_file_name)
     setIsRecording(false); // 録音状態をfalseに設定
     setModalVisible(false); // Close MusicGenerator modal
     setSecondModalVisible(true); // Open MusicDownloader modal
@@ -251,7 +253,10 @@ const Gen: React.FC = () => {
           onRequestClose={closeMusicDownloader}
         >
           <View style={styles.modalView}>
-            <MusicDownloader closeModal={closeMusicDownloader} />
+            <MusicDownloader 
+              user_id={userId}
+              S3_file_name={S3_file_name}
+              closeModal={closeMusicDownloader} />
           </View>
         </Modal>
 

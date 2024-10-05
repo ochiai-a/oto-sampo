@@ -3,17 +3,24 @@ import { View, TextInput, Text, TouchableOpacity, StyleSheet, SafeAreaView, Imag
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Audio } from 'expo-av';
 
-export default function MusicDownloader({ closeModal, openReviewer }: { closeModal: () => void; openReviewer: () => void }) {
+export default function MusicDownloader({ 
+    closeModal, 
+    openReviewer,
+    user_id,
+    S3_file_name
+  }: { 
+    closeModal: () => void; 
+    openReviewer: () => void;
+    user_id: string;
+    S3_file_name: () => string;
+  }) {
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
+  
   useEffect(() => {
-    return sound
-      ? () => {
-          sound.unloadAsync();
-        }
-      : undefined;
-  }, [sound]);
+    console.log("MusicDownloaderに渡されたS3_file_name:", S3_file_name);
+  }, [S3_file_name]);
 
   async function playSound() {
     if (sound) {

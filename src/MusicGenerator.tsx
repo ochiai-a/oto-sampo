@@ -22,7 +22,7 @@ export default function MusicGenerater({
   uploadUrl,
   userId,
 }: {
-  closeModal: () => void;
+  closeModal:  (s3FileName: string) => void;
   openDownloader: (stepFunctionResponse: any) => void; // 引数にstepFunctionResponseを追加
   recordingUri: string;
   fileName: string;
@@ -97,8 +97,8 @@ export default function MusicGenerater({
 
       if (response.ok) {
         setStepFunctionResponse(data); // レスポンスデータを保存
-        console.log("ステップファンクション結果",data.user_id, data.S3_file_name)
-        openDownloader(data);
+        console.log("ステップファンクション結果",user_id, S3_file_name)
+        closeModal(S3_file_name)
       } else {
         Alert.alert(
           "Error",
@@ -170,7 +170,7 @@ export default function MusicGenerater({
         </View>
 
         {/* ステップファンクションのレスポンスを表示 */}
-        {stepFunctionResponse && (
+        {/* {stepFunctionResponse && (
           <View style={{ marginTop: 20 }}>
             <Text style={styles.infoText}>
               User ID: {stepFunctionResponse.user_id}
@@ -179,7 +179,7 @@ export default function MusicGenerater({
               File Name: {stepFunctionResponse.S3_file_name}
             </Text>
           </View>
-        )}
+        )} */}
       </SafeAreaView>
     </ImageBackground>
   );
