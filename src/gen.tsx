@@ -36,6 +36,9 @@ const Gen: React.FC = () => {
   // Start recording
   const startRecording = async () => {
     try {
+      await getPresignedURL(); // Call getPresignedURL here
+      console.log("URL",fileName, uploadUrl)
+
       await deleteOldRecording();
       const { status } = await Audio.requestPermissionsAsync();
       if (status !== "granted") {
@@ -77,7 +80,6 @@ const Gen: React.FC = () => {
           });
           console.log("録音ファイルの新しい URI:", newUri);
           setRecordingUri(newUri);
-          await getPresignedURL(); // Call getPresignedURL here
         }
         setRecording(null);
       }
@@ -235,6 +237,9 @@ const Gen: React.FC = () => {
               selectedInstruments={selectedInstruments}
               recordingUri={recordingUri}
               closeModal={openMusicDownloader} // Function to open MusicDownloader modal
+              fileName={fileName} // Pass file name to MusicGenerater
+              uploadUrl={uploadUrl} // Pass upload URL to MusicGenerater
+              userId = {userId}
             />
           </View>
         </Modal>

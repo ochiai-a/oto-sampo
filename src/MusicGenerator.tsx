@@ -31,16 +31,21 @@ export default function MusicGenerater({
 }) {
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [stepFunctionResponse, setStepFunctionResponse] = useState<any>(null); // ステータスを保存
-  const asset = Asset.fromModule(require("../assets/music/test.mp3"));
-  const fileUri = asset.localUri || ""; // ローカルURIを取得
 
   // 3. 音楽ファイルをPresigned URLに送信する関数
   const uploadFile = async () => {
-    if (!fileUri || !uploadUrl) {
+    const asset = Asset.fromModule(require('../assets/music/test.mp3'));
+    const fileUri = asset.uri || ''; // ローカルURIを取得
+    console.log("次画面 保存ファイル名：",fileName,
+      "\n S3保存先:", uploadUrl,
+      "\n ユーザーID:", userId, 
+      "\n 送信ファイルuri:", fileUri,
+      "\n asset:", asset)
+    if (!fileName || !uploadUrl) {
       Alert.alert(
         "エラー",
-        `アップロードするファイルまたはURLを選択してください。\n\nfileUri: ${
-          fileUri || "なし"
+        `アップロードするファイルまたはURLを選択してください。\n\nfilename: ${
+          fileName || "なし"
         }\nuploadUrl: ${uploadUrl || "なし"}`
       );
       return;
@@ -58,7 +63,8 @@ export default function MusicGenerater({
       if (response.status === 200) {
         callStepFunction(); // アップロード後にStepFunctionを呼び出す
       } else {
-        Alert.alert("アップロード失敗", `ステータスコード: ${response.status}`);
+        console.log("アップロード失敗", `ステータスコード: ${response.status}`)
+        Alert.alert("アップロード失敗", `ステータスコード: ${response.status}`)
       }
     } catch (error: any) {
       Alert.alert("アップロードエラー", error.message);
@@ -87,6 +93,7 @@ export default function MusicGenerater({
       // レスポンスデータを状態に設定
       setStepFunctionResponse({ S3_file_name, user_id });
 
+      console.log("ステップファンクション結果",stepFunctionResponse)
       if (response.ok) {
         setStepFunctionResponse(data); // レスポンスデータを保存
       } else {
