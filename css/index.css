@@ -1,6 +1,6 @@
 body {
   height: 800px;
-  width: '100%',
+  width: 100%;
   background-color: #1fffff;
-  border: 1px;
+  border: 1px; /* 境界線に幅と色を指定 */
 }
