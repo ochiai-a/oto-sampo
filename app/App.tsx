@@ -3,7 +3,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Amplify from 'aws-amplify';
 import RecordingScreen from './(tabs)/recording';
-import UploadScreen from './upload';
 import { Audio } from 'expo-av';
 
 // Create a context for audio playback
@@ -41,7 +40,6 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator initialRouteName="recording">
           <Stack.Screen name="recording" component={RecordingScreen} />
-          <Stack.Screen name="Playback" component={UploadScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </AudioContext.Provider>
