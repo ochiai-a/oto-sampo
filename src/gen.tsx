@@ -162,7 +162,7 @@ const Gen: React.FC = () => {
       style={styles.background}
     >
       <View style={styles.container}>
-        <Text style={styles.header}>どんな音を作りますか？</Text>
+      <Text style={styles.header}>どんな音を作りますか？</Text>
         <View style={styles.optionWrapper}>
           <Text style={styles.optionLabel}>テンポ</Text>
           <View style={styles.optionRow}>
@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
     flex: 1, // Use flex to center the button vertically
     justifyContent: 'center', // Center vertically
     alignItems: 'center', // Center horizontally
-    marginTop: 100, // Adjust margin as needed
+    marginTop: 300, // Adjust margin as needed
   },
   image: {
     width: 220,
@@ -301,14 +301,16 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     paddingLeft: 22,
     paddingRight: 22,
+    marginTop: 50,
   },
   header: {
     fontSize: 28,
+    color: "brack",
     fontWeight: 'bold',
-    marginTop: 22,
+    marginTop: 100,
   },
   optionWrapper: {
-    marginTop: 22,
+    height: 100,
   },
   optionLabel: {
     fontSize: 16,
@@ -319,6 +321,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   optionItem: {
+    height:50,
     paddingVertical: 10,
     paddingHorizontal: 16,
     borderRadius: 20,
