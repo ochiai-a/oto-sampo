@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Text, TouchableOpacity, StyleSheet, SafeAreaView, ImageBackground, Image } from 'react-native';
+import { View, TextInput, Text, TouchableOpacity, StyleSheet, SafeAreaView, ImageBackground, Image, Share } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Audio } from 'expo-av';
-// import FavoriteButton from '../components/FavoriteButton';
 
 export default function MusicPlayer({ closeModal }: { closeModal: () => void }) {
   const [sound, setSound] = useState<Audio.Sound | null>(null);
@@ -37,60 +36,77 @@ export default function MusicPlayer({ closeModal }: { closeModal: () => void }) 
     }
   }
 
+  // シェア機能を持つ関数
+  const onShare = async () => {
+    try {
+      const result = await Share.share({
+        message: 'Check out this music track!',
+        url: 'path/to/your/musicfile.mp3'  // ここに共有する音楽ファイルのURLまたはローカルパスを設定
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          console.log('Shared with activity type: ' + result.activityType);
+        } else {
+          console.log('Shared');
+        }
+      } else if (result.action === Share.dismissedAction) {
+        console.log('Dismissed');
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
   return (
     <ImageBackground 
-    source={require('../assets/images/gen-rec.png')} // Background image path
-    style={styles.background}
+      source={require('../assets/images/gen-rec.png')} // 背景画像のパス
+      style={styles.background}
     >
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.favoriteButton} onPress={closeModal}>
-          <FontAwesome name="chevron-left" size={20} color="white" />
-        </TouchableOpacity>
-        <Text style={styles.headerText}>REVIEW</Text>
-        <TouchableOpacity style={styles.favoriteButton}>
-          <Text style={styles.headerText}>♡</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.container}>
-        <TouchableOpacity style={styles.favoriteButton} onPress={closeModal}>
-          {/* You can place any other interactive elements inside this TouchableOpacity */}
-          <View style={styles.circleContainer}>
-          <View style={styles.outerCircle} />
-          <Image style={{ width: 240, height: 240 }} source={require('../assets/images/BigCircle.png')} />
-          <View style={styles.innerCircle} />
-            <TouchableOpacity onPress={closeModal} style={styles.textContainer}>
-              <Text style={styles.circleText}>ここをクリックして保存</Text>
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.textcontainer}>
-        <View style={styles.titleWrapper}>
-          <View style={styles.musicTitle}>
-            <TextInput
-              style={styles.musicTitle}
-              placeholder="✐ 感想を残して下さい"
-              placeholderTextColor="#DDDDDD"
-            />
-          </View>
-          <Text style={styles.rating}></Text>
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.header}>
+          <TouchableOpacity style={styles.favoriteButton} onPress={closeModal}>
+            <FontAwesome name="chevron-left" size={20} color="white" />
+          </TouchableOpacity>
+          <Text style={styles.headerText}>REVIEW</Text>
+          <TouchableOpacity style={styles.favoriteButton}>
+            <Text style={styles.headerText}>♡</Text>
+          </TouchableOpacity>
         </View>
 
-        <View style={styles.buttonWrapper}>
-          {isPlaying ? (
-            <TouchableOpacity style={styles.musicButton} onPress={stopSound}>
-              <Image style={{ width: 76, height: 76 }} source={require('../assets/images/playButton1.png')} />
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity style={styles.musicButton} onPress={playSound}>
-              <Image style={{ width: 76, height: 76 }} source={require('../assets/images/playButton0.png')} />
-            </TouchableOpacity>
-          )}
+        <View style={styles.container}>
+          <TouchableOpacity style={styles.favoriteButton} onPress={closeModal}>
+            <View style={styles.circleContainer}>
+              <View style={styles.outerCircle} />
+              <Image style={{ width: 240, height: 240 }} source={require('../assets/images/BigCircle.png')} />
+              <View style={styles.innerCircle} />
+              <TouchableOpacity onPress={closeModal} style={styles.textContainer}>
+                <Text style={styles.circleText}>ここをクリックして送信</Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
         </View>
-      </View>
-    </SafeAreaView>
+
+        <View style={styles.textcontainer}>
+          <View style={styles.titleWrapper}>
+            <View style={styles.musicTitle}>
+              <TextInput
+                style={styles.musicTitle}
+                placeholder="✐ 感想を入力してください"
+                placeholderTextColor="#DDDDDD"
+              />
+
+
+                        {/* シェアボタンを追加 */}
+              <TouchableOpacity style={styles.shareButton} onPress={onShare}>
+                <Text style={styles.shareButtonText}>シェアする</Text>
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.rating}></Text>
+          </View>
+          
+
+        </View>
+      </SafeAreaView>
     </ImageBackground>
   );
 }
@@ -198,5 +214,15 @@ const styles = StyleSheet.create({
   musicButton: {
     paddingHorizontal: 20,
     justifyContent: 'center',
+  },
+  shareButton: {
+    marginTop: 20,
+    backgroundColor: '#FF32C7',
+    padding: 10,
+    borderRadius: 10,
+  },
+  shareButtonText: {
+    color: 'white',
+    fontSize: 16,
   },
 });
