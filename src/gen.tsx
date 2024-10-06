@@ -28,7 +28,7 @@ const Gen: React.FC = () => {
         await FileSystem.deleteAsync(recordingUri);
         console.log("古い録音ファイルを削除しました:", recordingUri);
       } catch (error) {
-        console.error("録音ファイル削除中にエラーが発生しました:", error);
+        console.log("録音ファイル削除中にエラーが発生しました:", error);
       }
     }
   };
@@ -56,7 +56,7 @@ const Gen: React.FC = () => {
       }, 10000);
       setRecordingTimeout(timeout); // Save the timeout reference
     } catch (error) {
-      console.error("録音中にエラーが発生しました:", error);
+      console.log("録音中にエラーが発生しました:", error);
     }
   };
 
@@ -84,7 +84,7 @@ const Gen: React.FC = () => {
         setRecording(null);
       }
     } catch (error) {
-      console.error("録音停止中にエラーが発生しました:", error);
+      console.log("録音停止中にエラーが発生しました:", error);
     }
   };
 
@@ -217,12 +217,12 @@ const Gen: React.FC = () => {
         )}
 
         {/* Display file name and upload URL */}
-        {fileName && uploadUrl && (
+        {/* {fileName && uploadUrl && (
           <View style={styles.recordingInfo}>
             <Text>ファイル名: {fileName}</Text>
             <Text>アップロードURL: {uploadUrl}</Text>
           </View>
-        )}
+        )} */}
 
         {/* Modal to show MusicGenerater */}
         <Modal

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Text, TouchableOpacity, StyleSheet, SafeAreaView, ImageBackground, Image } from 'react-native';
+import { View, TextInput, Text, TouchableOpacity, Alert, StyleSheet, SafeAreaView, ImageBackground, Image } from 'react-native';
+import * as FileSystem from 'expo-file-system';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Audio } from 'expo-av';
 
@@ -15,24 +16,100 @@ export default function MusicDownloader({
     S3_file_name: () => string;
   }) {
   const [sound, setSound] = useState<Audio.Sound | null>(null);
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
+  const [progress, setProgress] = useState<number | null>(null); // Progressステートを追加
+  const [isDownloadComplete, setIsDownloadComplete] = useState(false); // ダウンロード完了ステート
+  const maxRetries = 10;
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
-  
   useEffect(() => {
     console.log("MusicDownloaderに渡されたS3_file_name:", S3_file_name);
+    getPresignedURL();
   }, [S3_file_name]);
 
-  async function playSound() {
-    if (sound) {
-      await sound.stopAsync();
+  // ダウンロードURL取得リクエスト
+  const getPresignedURL = async () => {
+    console.log("呼び出し", retryCount ,"回目")
+    try {
+      const response = await fetch('https://ihce7qjrhd.execute-api.ap-northeast-1.amazonaws.com/dev/api/getMusicDownloadPresignedURL', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          file_name: S3_file_name,  // ユーザー入力値を使用
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('URL取得に失敗しました');
+      }
+
+      const data = await response.json();
+
+      if (data.url) {
+        setDownloadUrl(data.url);
+        console.log('URL取得成功', 'ダウンロードが開始されます');
+        downloadMusic(data.url);
+      } else {
+        throw new Error('URLが存在しません');
+      }
+    } catch (error) {
+      console.log('Presigned URL取得エラー:', error);
+      if (retryCount < maxRetries) {
+        setTimeout(() => {
+          setRetryCount(retryCount + 1);
+          getPresignedURL();
+        }, 20000);  // 20秒後に再試行
+      } else {
+        Alert.alert('失敗', 'ダウンロードURLの取得に失敗しました');
+      }
     }
-    const { sound: newSound } = await Audio.Sound.createAsync(
-      require('../assets/music/mondo_01.mp3')
-    );
-    setSound(newSound);
+  };
+
+  // 音楽をダウンロードする関数
+  const downloadMusic = async (url: string) => {
+    const fileUri = FileSystem.documentDirectory + S3_file_name;
+    try {
+      const downloadResumable = FileSystem.createDownloadResumable(
+        url,
+        fileUri,
+        {},
+        (downloadProgress) => {
+          const progress = downloadProgress.totalBytesWritten / downloadProgress.totalBytesExpectedToWrite;
+          setProgress(progress); // ダウンロード進捗をステートに設定
+          console.log(`Download progress: ${progress * 100}%`);
+        }
+      );
+
+      const result = await downloadResumable.downloadAsync();
+      
+      // resultがundefinedでないことを確認し、uriプロパティを使用
+      if (result && result.uri) {
+        setIsDownloadComplete(true); // ダウンロード完了を示す
+        console.log('ダウンロード完了', `ファイルが保存されました: ${result.uri}`);
+      } else {
+        throw new Error('ファイルの保存に失敗しました');
+      }
+    } catch (error) {
+      console.error('ダウンロードエラー:', error);
+    }
+  };
+
+  // 音楽を再生する関数
+  const playSound = async () => {
+    if (!downloadUrl) {
+      Alert.alert('エラー', '音楽ファイルがダウンロードされていません');
+      return;
+    }
+
+    const fileUri = FileSystem.documentDirectory + S3_file_name;
+    const { sound } = await Audio.Sound.createAsync({ uri: fileUri });  // URIから音声を読み込む
+    setSound(sound);
     setIsPlaying(true);
-    await newSound.playAsync();
-  }
+    await sound.playAsync();  // 音声を再生
+  };
 
   async function stopSound() {
     if (sound) {
@@ -61,40 +138,45 @@ export default function MusicDownloader({
 
       <View style={styles.container}>
         <TouchableOpacity style={styles.favoriteButton} onPress={closeModal}>
-          {/* You can place any other interactive elements inside this TouchableOpacity */}
           <View style={styles.circleContainer}>
-          <View style={styles.outerCircle} />
-          <Image style={{ width: 240, height: 240 }} source={require('../assets/images/BigCircle.png')} />
-          <View style={styles.innerCircle} />
+            <View style={styles.outerCircle} />
+            <Image style={{ width: 240, height: 240 }} source={require('../assets/images/BigCircle.png')} />
+            <View style={styles.innerCircle} />
             <TouchableOpacity onPress={closeModal} style={styles.textContainer}>
-              <Text style={styles.circleText}>あと1歩です！</Text>
+              <Text style={styles.circleText}>
+                {isDownloadComplete ? 'ダウンロード完了' : 'ダウンロード中です'} {/* ダウンロード中と完了の表示 */}
+                {progress !== null && !isDownloadComplete && ` ${Math.round(progress * 100)}%`} {/* プログレスの表示 */}
+              </Text>
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
       </View>
-      <View style={styles.textcontainer}>
-        <View style={styles.titleWrapper}>
-          <View style={styles.musicTitle}>
-            <TextInput
-              style={styles.musicTitle}
-              placeholder="✐ ドキドキの発表会"
-              placeholderTextColor="#DDDDDD"
-            />
+      
+        <View style={styles.textcontainer}>
+          <View style={styles.titleWrapper}>
+            <View style={styles.musicTitle}>
+              <TextInput
+                style={styles.musicTitle}
+                placeholder="✐ 名前をつけてください"
+                placeholderTextColor="#DDDDDD"
+              />
+            </View>
+            <Text style={styles.rating}></Text>
           </View>
-          <Text style={styles.rating}></Text>
-        </View>
 
-        <View style={styles.buttonWrapper}>
-          {isPlaying ? (
-            <TouchableOpacity style={styles.musicButton} onPress={stopSound}>
-              <Image style={{ width: 76, height: 76 }} source={require('../assets/images/playButton1.png')} />
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity style={styles.musicButton} onPress={playSound}>
-              <Image style={{ width: 76, height: 76 }} source={require('../assets/images/playButton0.png')} />
-            </TouchableOpacity>
-          )}
-        </View>
+        {isDownloadComplete && (
+          <View style={styles.buttonWrapper}>
+            {isPlaying ? (
+              <TouchableOpacity style={styles.musicButton} onPress={stopSound}>
+                <Image style={{ width: 76, height: 76 }} source={require('../assets/images/playButton1.png')} />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity style={styles.musicButton} onPress={playSound}>
+                <Image style={{ width: 76, height: 76 }} source={require('../assets/images/playButton0.png')} />
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
       </View>
     </SafeAreaView>
     </ImageBackground>
