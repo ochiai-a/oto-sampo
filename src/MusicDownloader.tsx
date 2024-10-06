@@ -20,7 +20,7 @@ export default function MusicDownloader({
   const [retryCount, setRetryCount] = useState(0);
   const [progress, setProgress] = useState<number | null>(null); // Progressステートを追加
   const [isDownloadComplete, setIsDownloadComplete] = useState(false); // ダウンロード完了ステート
-  const maxRetries = 10;
+  const maxRetries = 30;
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
   useEffect(() => {
@@ -30,7 +30,6 @@ export default function MusicDownloader({
 
   // ダウンロードURL取得リクエスト
   const getPresignedURL = async () => {
-    console.log("呼び出し", retryCount ,"回目")
     try {
       const response = await fetch('https://ihce7qjrhd.execute-api.ap-northeast-1.amazonaws.com/dev/api/getMusicDownloadPresignedURL', {
         method: 'POST',
@@ -43,6 +42,7 @@ export default function MusicDownloader({
       });
 
       if (!response.ok) {
+        console.log("呼び出し", retryCount ,"回目")
         throw new Error('URL取得に失敗しました');
       }
 
@@ -61,7 +61,7 @@ export default function MusicDownloader({
         setTimeout(() => {
           setRetryCount(retryCount + 1);
           getPresignedURL();
-        }, 20000);  // 20秒後に再試行
+        }, 10000);  // 20秒後に再試行
       } else {
         Alert.alert('失敗', 'ダウンロードURLの取得に失敗しました');
       }

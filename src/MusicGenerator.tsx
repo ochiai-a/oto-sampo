@@ -118,7 +118,7 @@ export default function MusicGenerater({
     // コンポーネントがマウントされたときにアップロード機能を呼び出す
     setTimeout(() => {
       uploadFile();
-    }, 3000); // 3000ミリ秒 = 3
+    }, 1000); // 3000ミリ秒 = 3
     return sound
       ? () => {
           sound.unloadAsync();
