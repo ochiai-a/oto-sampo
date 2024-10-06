@@ -8,12 +8,15 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/images/splashscreen.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "UIBackgroundModes": ["audio"]
+      }
     },
     "android": {
       "package": "com.otosampo.otosampo",
@@ -21,7 +24,6 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       }
-      
     },
     "web": {
       "bundler": "metro",
@@ -33,6 +35,9 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "navigation": {
+      "headerShown": false
     }
   }
 }

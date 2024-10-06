@@ -11,24 +11,42 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: '#984EF5', // アクティブなタブの色を白に設定
+        tabBarInactiveTintColor: '#767676', // 非アクティブなタブの色
+        tabBarStyle: {
+          backgroundColor: '#F3EDF7', // タブバーの背景色
+          borderTopWidth: 1, // ボーダーの幅
+          borderTopColor: '#DDDDDD', // ボーダーの色
+          height: 81,
+          paddingBottom: 21,
+        },
         headerShown: false,
-      }}>
+      }}
+    >
       <Tabs.Screen
-        name="index"
+        name="library"
         options={{
-          title: 'Home',
+          title: 'ライブラリ', // タブのタイトル
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
+            <TabBarIcon name={focused ? 'library' : 'library-outline'} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="recording"
         options={{
-          title: 'Explore',
+          title: '生成', // タブのタイトル
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+            <TabBarIcon name={focused ? 'mic' : 'mic-outline'} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="feed"
+        options={{
+          title: '共有', // タブのタイトル
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'newspaper' : 'newspaper-outline'} color={color} />
           ),
         }}
       />
