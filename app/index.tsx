@@ -6,20 +6,24 @@ export default function App() {
   const router = useRouter();
 
   const goToLibrary = () => {
-    router.push('./(tabs)/library'); // library.tsx へ遷移
+    router.push('./(tabs)/library'); // Navigate to library.tsx
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.imageContainer}>
-        {/* 画像をTouchableOpacityでラップし、タップで画面遷移 */}
-        <TouchableOpacity onPress={goToLibrary}>
-          <Image source={require('../assets/images/splashscreen.png')} style={styles.image} />
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+    <>
+      <Stack.Screen options={{ headerShown: false }} /> {/* Hide the header for this specific screen */}
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.imageContainer}>
+          {/* Wrap the image with TouchableOpacity to enable navigation */}
+          <TouchableOpacity onPress={goToLibrary}>
+            <Image source={require('../assets/images/splashscreen.png')} style={styles.image} />
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    </>
   );
 }
+
 
 const styles = StyleSheet.create({
   safeArea: {
