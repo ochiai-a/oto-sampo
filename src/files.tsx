@@ -30,6 +30,14 @@ function ListItem({ title, date }: ListItemProps) {
 function Files() {
   const items = [
     { title: 'mondo', date: '2024.10.11' },
+    { title: 'New York City Tour', date: '2024.10.9' },
+    { title: '海辺でお散歩', date: '2024.7.1' },
+    { title: '帰省', date: '2024.3.10' },
+    { title: '神保町の本屋', date: '2024.9.30' },
+    { title: '卒業式', date: '2024.3.31' },
+    { title: '涙のふるさと', date: '2010.2.10' },
+    { title: '年末年始', date: '2023.12.31' },
+    { title: '富士山山頂', date: '2024.8.20' },
   ];
 
   return (
